@@ -3,7 +3,7 @@
 
 //Structure of a company
 typedef struct company{
-    char* name;
+    char name[15];
     char acronym[3];
     Planes_list planes_company;
 }Company;
@@ -13,7 +13,7 @@ typedef struct plane{
     char id[7];
     int fuel;
     int comsumption;
-    char hour_takeoff[4];
+    char takeoff_time[4];
     Company* company;
 }Plane;
 
@@ -25,6 +25,7 @@ typedef struct cell_plane{
     struct cell_plane* next_waiting;// Pointer on the next plane wanting (take off or landing)
 }Cell_plane;
 
+//lists takeoff_wait and landing_wait will be of type Plane_list
 typedef Cell_plane *Planes_list;
 
 
@@ -32,24 +33,25 @@ typedef Cell_plane *Planes_list;
 typedef struct cell_company{
     Company company;
     struct cell_company* next_company;
+    struct cell_company* previous_company;
 }Cell_company;
 
 typedef Cell_company *Companies_list;
 
 
-
-
-/* definition of the landing queue list */
+/* definition of the immediate takeoff queue list */
 typedef struct {
-    Planes_list * first;
-    Planes_list * last;
+    Cell_plane * first;
+    Cell_plane * last;
 }Takeoff_list;
 
-void initTakeoff(Takeoff* Que);
-void pushTakeoff(Takeoff* Que, Cell_plane *nElt);
-Cell_plane* popTakeoff(Takeoff* Que);
-void displayTakeoff(Takeoff *Que);
 
+void initTakeoff(Takeoff_list* Que);
+void pushTakeoff(Takeoff_list* Que, Cell_plane *nElt);
+Cell_plane* popTakeoff(Takeoff_list* Que);
+void displayTakeoff(Takeoff_list *Que);
+
+void new_company(Company * newcomp);
 
 
 

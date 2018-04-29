@@ -54,3 +54,4 @@ dkms.conf
 #Special for us
 *.cbp
 *.layout
+*.depend

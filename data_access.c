@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "data_access.h"
-
+#include "actions.h"
 void new_company(Company * newcomp)
 {
     printf("Name of the company: ");
@@ -30,6 +30,7 @@ void pushTakeoff(Takeoff_list* Que, Cell_plane *nElt)
         Que->last=nElt;
     }
 }
+
 Cell_plane* popTakeoff(Takeoff_list* Que)
 {
     if(Que->first==NULL)

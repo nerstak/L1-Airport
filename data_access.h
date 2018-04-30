@@ -1,11 +1,12 @@
 #ifndef DATA_ACCESS_H_INCLUDED
 #define DATA_ACCESS_H_INCLUDED
 
+
 //Structure of a company
 typedef struct company{
     char name[15];
     char acronym[3];
-    Planes_list planes_company;
+    Plane planes_company;
 }Company;
 
 //Structure of a plane
@@ -52,6 +53,14 @@ Cell_plane* popTakeoff(Takeoff_list* Que);
 void displayTakeoff(Takeoff_list *Que);
 
 void new_company(Company * newcomp);
+
+
+
+
+
+
+
+char * time2string(int intime);
 
 
 

@@ -1,8 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include "data_access.h"
+
 
 int main()
 {
-    printf("Hello world!\n");
-    return 0;
+    Companies_list list_company=NULL;
+    new_cell_company(&list_company);
+    new_cell_company(&list_company);
 }

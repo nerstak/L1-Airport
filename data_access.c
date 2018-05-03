@@ -1,15 +1,49 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "data_access.h"
-#include "actions.h"
-void new_company(Company * newcomp)
+
+Company * new_company()
 {
+    Company * newComp=malloc(sizeof(Company));
     printf("Name of the company: ");
-    scanf("%s",newcomp->name);
+    scanf("%s",newComp->name);
     printf("Acronym: ");
-    scanf("%s",newcomp->acronym);
-    newcomp->planes_company=NULL;
+    scanf("%s",newComp->acronym);
+    newComp->planes_company=NULL;
+    return newComp;
 }
+
+void new_cell_company(Companies_list * list_company)
+{
+    Companies_list cursor_company;
+    cursor_company=*list_company;
+    Cell_company * newCellComp=malloc(sizeof(Cell_company));
+    Company *temp=new_company();
+    newCellComp->company=*temp;
+    newCellComp->next_company=NULL;
+
+    if(*list_company==NULL)
+    {
+        *list_company=newCellComp;
+    }
+    else
+    {
+        while(cursor_company->next_company != NULL)
+        {
+            cursor_company=cursor_company->next_company;
+        }
+        cursor_company->next_company=newCellComp;
+    }
+}
+
+Plane * newPlane()
+{
+    Plane * newPlane()=malloc(sizeof(Plane));
+    printf("ID of the plane: ");
+    scanf("%s",newPlane->id);
+
+}
+
 
 void initTakeoff(Takeoff_list* Que)
 {
@@ -47,7 +81,8 @@ Cell_plane* popTakeoff(Takeoff_list* Que)
         return cur;
     }
 }
-void displayTakeoff(Takeoff_list *Que)
+
+/*void displayTakeoff(Takeoff_list *Que)
 {
     Cell_plane * cur=Que->first;
     while(cur!=NULL)
@@ -55,4 +90,4 @@ void displayTakeoff(Takeoff_list *Que)
         printf("%s - %s\n",cur->plane->takeoff_time,cur->plane->id);
         cur=cur->next_waiting;
     }
-}
+}*/

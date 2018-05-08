@@ -22,3 +22,61 @@ int time2int(char * stime) //converts a clock time string to system time
     m[1]=stime[3];
     return (atoi(h)*60)+atoi(m);
 }
+
+void sortwaitinglist(Planes_list PlaneL)
+{
+    int unsorted=1;
+    Cell_plane *cur,*prev,*follow;
+    while(unsorted)
+    {
+        unsorted=0;
+        prev=PlaneL;
+        cur=prev->next_waiting;
+        if(cur!=NULL)
+            follow=cur->next_waiting;
+        else
+            follow=NULL;
+        if(cur!=NULL)
+        {
+            if(PlanePriority(&(prev->plane))>PlanePriority(&(cur->plane)))
+            {
+                prev->next_waiting=follow;
+                cur->next_waiting=prev;
+                PlaneL=cur;
+                prev=PlaneL;
+                cur=prev->next_waiting;
+                unsorted=1;
+            }
+        }
+        while(follow!=NULL)
+        {
+            if(PlanePriority(&(cur->plane))>PlanePriority(&(follow->plane)))
+            {
+                prev->next_waiting=follow;
+                cur->next_waiting=follow->next_waiting;
+                follow->next_waiting=cur;
+                unsorted=1;
+            }
+            prev=prev->next_waiting;
+            cur=prev->next_waiting;
+            follow=cur->next_waiting;
+        }
+    }
+}
+
+int PlanePriority(Plane * plane)
+{
+    if(plane->comsumption=NULL)
+    {
+        return time2int(&(plane->takeoff_time));
+    }
+    else
+    {
+        return Fueltime(plane);
+    }
+}
+
+int Fueltime(Plane * plane)
+{
+    return plane->fuel/plane->comsumption;
+}

@@ -38,7 +38,7 @@ void new_cell_company(Companies_list * list_company)
 
 Plane * newPlane()
 {
-    Plane * newPlane()=malloc(sizeof(Plane));
+    Plane * newPlane=malloc(sizeof(Plane));
     printf("ID of the plane: ");
     scanf("%s",newPlane->id);
 

@@ -33,9 +33,6 @@ typedef struct Company{
 
 
 
-
-
-
 //Structure of the cell of a company
 typedef struct Cell_company{
     Company company;

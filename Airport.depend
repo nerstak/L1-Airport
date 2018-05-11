@@ -3,16 +3,35 @@
 	<stdio.h>
 	<stdlib.h>
 
-1525808662 source:c:\users\theo\documents\github\airport_l1p4\main.c
+1526063036 source:c:\users\theo\documents\github\airport_l1p4\main.c
 	<stdio.h>
 	<stdlib.h>
+	"actions.h"
 	"data_access.h"
+	"log_read.h"
 
-1525809618 c:\users\theo\documents\github\airport_l1p4\data_access.h
+1526045222 c:\users\theo\documents\github\airport_l1p4\data_access.h
 	<string.h>
 
-1525809708 source:c:\users\theo\documents\github\airport_l1p4\data_access.c
+1526045222 source:c:\users\theo\documents\github\airport_l1p4\data_access.c
 	<stdio.h>
 	<stdlib.h>
 	"data_access.h"
+
+1526063153 source:c:\users\theo\documents\github\airport_l1p4\actions.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"data_access.h"
+	"actions.h"
+
+1526062397 c:\users\theo\documents\github\airport_l1p4\actions.h
+	"data_access.h"
+
+1526045222 source:c:\users\theo\documents\github\airport_l1p4\log_read.c
+	<stdio.h>
+	<stdlib.h>
+	"log_read.h"
+
+1526045222 c:\users\theo\documents\github\airport_l1p4\log_read.h
 

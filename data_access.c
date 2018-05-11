@@ -2,23 +2,21 @@
 #include <stdlib.h>
 #include "data_access.h"
 
-Company * new_company()
+Company * new_company(char *name,char *acronym)
 {
     Company * newComp=malloc(sizeof(Company));
-    printf("Name of the company: ");
-    scanf("%s",newComp->name);
-    printf("Acronym: ");
-    scanf("%s",newComp->acronym);
+    strcpy(newComp->name,name);
+    strcpy(newComp->acronym,acronym);
     newComp->planes_company=NULL;
     return newComp;
 }
 
-void new_cell_company(Companies_list * list_company)
+void new_cell_company(Companies_list * list_company,char *name,char *acronym)
 {
     Companies_list cursor_company;
     cursor_company=*list_company;
     Cell_company * newCellComp=malloc(sizeof(Cell_company));
-    Company *temp=new_company();
+    Company *temp=new_company(name,acronym);
     newCellComp->company=*temp;
     newCellComp->next_company=NULL;
 
@@ -36,13 +34,64 @@ void new_cell_company(Companies_list * list_company)
     }
 }
 
-Plane * newPlane()
+Plane * new_plane(char *id, int comsumption, int fuel, char *takeoff_time, Company *ptr_comp)
 {
     Plane * newPlane=malloc(sizeof(Plane));
-    printf("ID of the plane: ");
-    scanf("%s",newPlane->id);
+    strcpy(newPlane->id,id);
+    newPlane->comsumption=comsumption;
+    newPlane->fuel=fuel;
+    strcpy(newPlane->takeoff_time,takeoff_time);
+    newPlane->company=ptr_comp;
+    return newPlane;
+}
+
+void new_cell_plane(char *id,int comsumption, int fuel, char *takeoff_time, Company *ptr_comp)
+{
+    Planes_list cursor_plane;
+    cursor_plane=ptr_comp->planes_company;
+    Cell_plane * newCellPlane=malloc(sizeof(Cell_plane));
+    Plane * temp=new_plane(id,comsumption,fuel,takeoff_time,ptr_comp);
+    newCellPlane->plane=*temp;
+    newCellPlane->next_plane_company=NULL;
+    newCellPlane->next_waiting=NULL;
+    newCellPlane->previous_plane_company=NULL;
+
+    if(ptr_comp->planes_company==NULL)
+    {
+        ptr_comp->planes_company=newCellPlane;
+    }
+    else
+    {
+        while(cursor_plane->next_plane_company != NULL)
+        {
+            cursor_plane=cursor_plane->next_plane_company;
+        }
+        cursor_plane->next_plane_company=newCellPlane;
+    }
+
+
 
 }
+
+Company * search_company(Companies_list * list_company, char * name)
+{
+    Companies_list cursor_company;
+    cursor_company=*list_company;
+    while(cursor_company != NULL && strcmp(name,cursor_company->company.name)!=0)
+    {
+        cursor_company=cursor_company->next_company;
+    }
+    if(strcmp(name,cursor_company->company.name)==0)
+    {
+        return cursor_company;
+    }
+    return NULL;
+}
+
+
+
+
+
 
 
 void initTakeoff(Takeoff_list* Que)

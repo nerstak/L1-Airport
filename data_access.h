@@ -15,9 +15,9 @@ typedef struct Plane{
 //Structure of the cell of a plane
 typedef struct Cell_plane{
     Plane plane;
-    struct cell_plane* next_plane_company;// Pointer on the next plane of the company
-    struct cell_plane* previous_plane_company;// Pointer on the previous plane of the company
-    struct cell_plane* next_waiting;// Pointer on the next plane waiting (take off or landing)
+    struct Cell_plane* next_plane_company;// Pointer on the next plane of the company
+    struct Cell_plane* previous_plane_company;// Pointer on the previous plane of the company
+    struct Cell_plane* next_waiting;// Pointer on the next plane waiting (take off or landing)
 }Cell_plane;
 
 //lists takeoff_wait and landing_wait will be of type Plane_list
@@ -45,8 +45,8 @@ typedef Cell_company *Companies_list;
 
 /* definition of the immediate takeoff queue list */
 typedef struct Takeoff_list{
-    Cell_plane * first;
-    Cell_plane * last;
+    Planes_list first;
+    Planes_list last;
 }Takeoff_list;
 
 
@@ -55,9 +55,9 @@ void pushTakeoff(Takeoff_list* Que, Cell_plane *nElt);
 Cell_plane* popTakeoff(Takeoff_list* Que);
 void displayTakeoff(Takeoff_list *Que);
 
-Company * new_company(); //Create a new company
-void new_cell_company(Companies_list * list_company); //Create the new cell of a company
-
-
+Company * new_company(char *name,char *acronym); //Create a new company
+void new_cell_company(Companies_list * list_company,char *name,char *acronym); //Create the new cell of a company
+Plane * new_plane(char *id, int comsumption, int fuel, char *takeoff_time, Company *ptr_comp);
+void new_cell_plane(char *id,int comsumption, int fuel, char *takeoff_time, Company *ptr_comp);
 
 #endif // DATA_ACCESS_H_INCLUDED

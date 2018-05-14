@@ -2,8 +2,9 @@
 #include <stdlib.h>
 
 #include "log_read.h"
+#include "data_access.h"
 
-///Line should be "HHMM TYP STUFF_EXEC"
+///Line should be "HHMM TYP STUFF_EXEC", ONLY one is executed at the time
 
 int events_reading(int *num_line, char *time)
 {
@@ -63,4 +64,39 @@ void events_execution(char *event)
         ///To Finish
     }
 
+}
+
+Companies_list  setup_companies()
+{
+    Companies_list * list_company=malloc(sizeof(Companies_list));
+    *list_company=NULL;
+    FILE * companies_file = NULL; //Opening the file events.log
+    char line[100],company[15],acronym[4],temp[2];
+    strcpy(line,"");
+    companies_file = fopen("cfg/companies.cfg","r");
+    if(companies_file==NULL)
+    {
+        return NULL;
+    }
+    while (fgets(line,100,companies_file)!=NULL)
+    {
+        strcpy(company,"");
+        strcpy(acronym,"");
+        int i=0;
+        while(i<14 && line[i]!='=')
+        {
+            temp[0]=line[i]; //Converting a caracter pickup into a string
+            temp[1]='\0';
+            strcat(company,temp);
+            i++;
+        }
+        for(++i;i<strlen(company)+4;i++)
+        {
+            temp[0]=line[i]; //Converting a caracter pickup into a string
+            temp[1]='\0';
+            strcat(acronym,temp);
+        }
+        new_cell_company(list_company,company,acronym);
+    }
+    return *list_company;
 }

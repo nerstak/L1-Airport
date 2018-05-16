@@ -5,7 +5,10 @@
 #include "log_read.h"
 
 int main()
-{/*
+{
+
+    int line=0;
+    events_reading(&line,"1531");
     // initializing variables
     int time,numscheduled;
     Planes_list Landing=NULL,Takeoff_wait=NULL;
@@ -55,10 +58,13 @@ int main()
             Landing=Landing->next_waiting;
         }
         sortwaitinglist(Landing);
-    }*/
+    }
+/*
     //Actually to test the viability of functions
+    int lm=0;
     Companies_list list_company,tmp;
     list_company = setup_companies();
+    events_reading(&lm,"1531",&list_company);
     printf("%s\n",list_company->company.acronym);
     tmp=list_company->next_company;
     printf("%s\n",tmp->company.acronym);
@@ -66,7 +72,11 @@ int main()
     new_cell_plane("DCT056",2,50,"1338",list_company);
     new_cell_plane("DCT059",2,50,"1339",list_company);
     printf("%s",list_company->company.planes_company->next_plane_company->next_plane_company->plane.id);
-    //new_cell_company(&list_company);
+    Planes_list lol,tpa;
+    tpa=list_company->company.planes_company;
+    Planes_list bl=list_company->company.planes_company;
+    lol = search_cell_plane(&(list_company->company.planes_company),"DCT042");
+    printf("%s",lol->plane.takeoff_time);
 
-
+    //new_cell_company(&list_company);*/
 }

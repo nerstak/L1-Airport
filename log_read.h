@@ -2,9 +2,11 @@
 #define LOG_READ_H_INCLUDED
 #include "data_access.h"
 
-int events_reading(int *num_line, char *time);
+void seperate(int beginning, int ending, char * words, char * result);
 
-void events_execution(char *event);
+char * events_reading(int *num_line, char *time, Companies_list * list_company);
+
+void events_execution(char *event, Companies_list * list_company);
 
 Companies_list setup_companies();
 

@@ -73,17 +73,32 @@ void new_cell_plane(char *id,int comsumption, int fuel, char *takeoff_time, Comp
 
 }
 
-Company * search_company(Companies_list * list_company, char * name)
+Company * search_company(Companies_list * list_company, char * acronym)
 {
     Companies_list cursor_company;
     cursor_company=*list_company;
-    while(cursor_company != NULL && strcmp(name,cursor_company->company.name)!=0)
+    while(cursor_company != NULL && strcmp(acronym,cursor_company->company.acronym)!=0)
     {
         cursor_company=cursor_company->next_company;
     }
-    if(strcmp(name,cursor_company->company.name)==0)
+    if(cursor_company!=NULL && strcmp(acronym,cursor_company->company.acronym)==0)
     {
         return cursor_company;
+    }
+    return NULL;
+}
+
+Cell_plane * search_cell_plane(Planes_list * planes_company, char * name)
+{
+    Planes_list cursor_plane;
+    cursor_plane=*planes_company;
+    while(cursor_plane != NULL&& strcmp(name,cursor_plane->plane.id)!=0)
+    {
+        cursor_plane=cursor_plane->next_plane_company;
+    }
+    if(cursor_plane != NULL && strcmp(name,cursor_plane->plane.id)==0)
+    {
+        return cursor_plane;
     }
     return NULL;
 }

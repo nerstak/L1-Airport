@@ -60,4 +60,7 @@ void new_cell_company(Companies_list * list_company,char *name,char *acronym); /
 Plane * new_plane(char *id, int comsumption, int fuel, char *takeoff_time, Company *ptr_comp);
 void new_cell_plane(char *id,int comsumption, int fuel, char *takeoff_time, Company *ptr_comp);
 
+Company * search_company(Companies_list * list_company, char * acronym);
+Cell_plane * search_cell_plane(Planes_list * planes_company, char * name);
+
 #endif // DATA_ACCESS_H_INCLUDED

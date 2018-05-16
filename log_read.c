@@ -4,35 +4,38 @@
 #include "log_read.h"
 #include "data_access.h"
 
-///Line should be "HHMM TYP STUFF_EXEC", ONLY one is executed at the time
+void seperate(int beginning, int ending, char * words, char * result)
+{
+    char temp[2];
+    strcpy(result,"");
+    for(int i=beginning;i<ending;i++) //Checking if the event have to be triggered
+    {
+        temp[0]=words[i]; //Converting a caracter pickup into a string
+        temp[1]='\0';
+        strcat(result,temp);
+    }
+}
 
-int events_reading(int *num_line, char *time)
+char * events_reading(int *num_line, char *time, Companies_list * list_company)
 {
     FILE * events_file = NULL; //Opening the file events.log
     char line[100],time_event[5],temp[2];
-    strcpy(time_event,"");
-    strcpy(line,"");
     events_file = fopen("cfg/events.log","r");
     if (events_file==NULL)
     {
         return NULL;
     }
-    printf("%d",*num_line);
-    for(int i=0;i<*num_line;i++) //Going to the last line
-    {
-        fgets(line,100,events_file);
-    }
+    fgets(line,5,events_file);
+    seperate(0,4,line,time_event);
     ++*num_line;
-    fgets(line,100,events_file);
-    for(int i=0;i<4;i++) //Checking if the event have to be triggered
-    {
-        temp[0]=line[i]; //Converting a caracter pickup into a string
-        temp[1]='\0';
-        strcat(time_event,temp);
-    }
+    printf("Time_file=%s\n",time_event);
     if(strcmp(time,time_event)==0)
     {
-        printf("THTH\n"); //Replace with events_execution()
+        while(fgets(line,25,events_file)!=NULL && line[4]!=":")
+        {
+            printf("%s\n",line);
+            events_execution(line,list_company);
+        }
     }
     else
     {
@@ -41,27 +44,26 @@ int events_reading(int *num_line, char *time)
 
 }
 
-void events_execution(char *event)
+void events_execution(char *event,Companies_list * list_company)
 {
     //First decomposition
-    char temp[2],type_event[4];
-    for(int i=5;i<8;i++) //Checking if the event have to be triggered
+    char temp[2],type_event;
+    if(event[7]=='A' || event[7]=='D')
     {
-        temp[0]=event[i]; //Converting a caracter pickup into a string
-        temp[1]='\0';
-        strcat(type_event,temp);
-    }
-    if(strcmp(type_event,"ADD")==0)
-    {
-        char id_plane[7], list_to_add;
-        for(int i=9;i<15;i++) //Checking if the event have to be triggered
+        char name[7],acro_comp[4];
+        Companies_list ptr_comp;
+        seperate(0,3,event,acro_comp);
+        seperate(0,6,event,name);
+        printf("Acr: %s\nName: %s\n",acro_comp,name);
+        ptr_comp=search_company(list_company,acro_comp);
+        if(ptr_comp==NULL)
         {
-            temp[0]=event[i]; //Converting a caracter pickup into a string
-            temp[1]='\0';
-            strcat(id_plane,temp);
+            char new_name_comp[15];
+            printf("Name of the company corresponding to \"%s\"?",acro_comp);
+            scanf("%s",new_name_comp);
+            new_cell_company(list_company,new_name_comp,acro_comp);
+            ptr_comp=search_company(list_company,acro_comp);
         }
-        list_to_add=event[16];
-        ///To Finish
     }
 
 }
@@ -98,5 +100,6 @@ Companies_list  setup_companies()
         }
         new_cell_company(list_company,company,acronym);
     }
+    fclose(companies_file);
     return *list_company;
 }

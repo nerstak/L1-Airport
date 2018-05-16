@@ -16,7 +16,7 @@ void seperate(int beginning, int ending, char * words, char * result)
     }
 }
 
-char * events_reading(int *num_line, char *time, Companies_list * list_company)
+char * events_reading(int *num_line, char *time, Companies_list * list_company, lists_present_planes *list_planes_used)
 {
     FILE * events_file = NULL; //Opening the file events.log
     char line[100],time_event[5],temp[2];
@@ -34,7 +34,7 @@ char * events_reading(int *num_line, char *time, Companies_list * list_company)
         while(fgets(line,25,events_file)!=NULL && line[4]!=":")
         {
             printf("%s\n",line);
-            events_execution(line,list_company);
+            events_execution(line,list_company,list_planes_used);
         }
     }
     else
@@ -44,19 +44,19 @@ char * events_reading(int *num_line, char *time, Companies_list * list_company)
 
 }
 
-void events_execution(char *event,Companies_list * list_company)
+void events_execution(char *event,Companies_list * list_company, lists_present_planes *list_planes_used)
 {
     //First decomposition
     char temp[2],type_event;
-    if(event[7]=='A' || event[7]=='D')
+    if(event[7]=='A' || event[7]=='D' || event[7]=='U') //Checking if
     {
-        char name[7],acro_comp[4];
+        char id[7],acro_comp[4];
         Companies_list ptr_comp;
         seperate(0,3,event,acro_comp);
-        seperate(0,6,event,name);
-        printf("Acr: %s\nName: %s\n",acro_comp,name);
+        seperate(0,6,event,id);
+        printf("Acr: %s\nName: %s\n",acro_comp,id);
         ptr_comp=search_company(list_company,acro_comp);
-        if(ptr_comp==NULL)
+        if(ptr_comp==NULL)//Creation of the company if it doesn't exist
         {
             char new_name_comp[15];
             printf("Name of the company corresponding to \"%s\"?",acro_comp);
@@ -64,8 +64,46 @@ void events_execution(char *event,Companies_list * list_company)
             new_cell_company(list_company,new_name_comp,acro_comp);
             ptr_comp=search_company(list_company,acro_comp);
         }
+        if(presence_in_lists(list_planes_used->boarding,id)==0 && presence_in_lists(list_planes_used->landing,id)==0 && presence_in_lists(list_planes_used->emergency,id)==0 && presence_in_lists(list_planes_used->takeoff->first,id)==0) //Checking if the plane is not currently used
+        {
+            char takeoff_time[5],fuel[3],consumption[3];
+            Cell_plane * ptr_plane;
+            ptr_plane=search_cell_plane(&ptr_comp->company.planes_company,id);
+            seperate(9,13,event,takeoff_time);
+            seperate(14,16,event,fuel);
+            seperate(17,19,event,consumption);
+            if(ptr_plane==NULL) //Creating the plane if it doesn't exists
+            {
+                new_cell_plane(id,atoi(consumption),atoi(fuel),takeoff_time,ptr_comp);
+                ptr_plane=search_cell_plane(&ptr_comp->company.planes_company,id);
+            }
+            else //Or updating the parameters
+            {
+                ptr_plane->plane.fuel=atoi(fuel);
+                ptr_plane->plane.comsumption=atoi(fuel);
+                strcpy(ptr_plane->plane.takeoff_time,takeoff_time);
+            }
+            switch(event[7])
+            {
+            case 'A':
+                add_to_list(&list_planes_used->landing,ptr_plane);
+                break;
+            case 'D':
+                add_to_list(&(list_planes_used->boarding),ptr_plane);
+                break;
+            case 'U':
+                add_to_list(&list_planes_used->emergency,ptr_plane);
+                break;
+            }
+        }
     }
 
+    char keyword[10];
+    seperate(0,9,event,keyword);
+    if(strcmp("BLACKLIST",keyword)==0)
+    {
+        //Add to the dictionnary of blacklisted companies. Then, each turn verifies if the company's plane isn't on the list during sort, however go to emergency
+    }
 }
 
 Companies_list  setup_companies()
@@ -102,4 +140,20 @@ Companies_list  setup_companies()
     }
     fclose(companies_file);
     return *list_company;
+}
+
+void add_to_list(Planes_list * list,Cell_plane *newCellPlane)
+{
+    Planes_list cursor;
+    cursor=*list;
+    while(cursor!=NULL && cursor->next_waiting!=NULL)
+    {
+        printf("zz %s\n",cursor->plane.id);
+        cursor=cursor->next_waiting;
+    }
+    if(cursor==NULL)
+        *list=newCellPlane;
+    else
+        cursor->next_waiting=newCellPlane;
+    printf("a%d",newCellPlane);
 }

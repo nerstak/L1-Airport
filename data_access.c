@@ -88,22 +88,31 @@ Company * search_company(Companies_list * list_company, char * acronym)
     return NULL;
 }
 
-Cell_plane * search_cell_plane(Planes_list * planes_company, char * name)
+Cell_plane * search_cell_plane(Planes_list * planes_company, char * id) //Search a plane in the list of company, using the ID
 {
     Planes_list cursor_plane;
     cursor_plane=*planes_company;
-    while(cursor_plane != NULL&& strcmp(name,cursor_plane->plane.id)!=0)
+    while(cursor_plane != NULL && strcmp(id,cursor_plane->plane.id)!=0)
     {
         cursor_plane=cursor_plane->next_plane_company;
     }
-    if(cursor_plane != NULL && strcmp(name,cursor_plane->plane.id)==0)
+    if(cursor_plane != NULL && strcmp(id,cursor_plane->plane.id)==0)
     {
         return cursor_plane;
     }
     return NULL;
 }
 
-
+int presence_in_lists(Planes_list list_planes, char * id) //If a plane is in a list, it returns 1, else 0
+{
+    Planes_list cur;
+    cur=list_planes;
+    while(cur!=NULL && strcmp(cur->plane.id,id)!=0)
+        cur=cur->next_waiting;
+    if(cur!=NULL && strcmp(cur->plane.id,id)==0)
+        return 1;
+    return 0;
+}
 
 
 

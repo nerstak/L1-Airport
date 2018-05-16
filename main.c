@@ -6,7 +6,7 @@
 
 int main()
 {
-
+    printf("S U C C");
     int line=0;
     events_reading(&line,"1531");
     // initializing variables

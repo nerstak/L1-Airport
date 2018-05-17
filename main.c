@@ -6,23 +6,26 @@
 
 int main()
 {
-    printf("S U C C");
     int line=0;
-    events_reading(&line,"1531");
+    char stime[5];
+    //events_reading(&line,"1531");
     // initializing variables
-    int time,numscheduled;
-    Planes_list Landing=NULL,Takeoff_wait=NULL;
-    Takeoff_list * Takeoff_now;
-    Takeoff_now=malloc(sizeof(Takeoff_list));
-    initTakeoff(Takeoff_now);
-
-    //      ALL INITIAL FILE READING SHIT HERE
+    int time;
+    lists_present_planes * present_planes;
+    init_present_planes(present_planes);
+    Companies_list all_companies, blacklisted_companies;
+    all_companies=setup_companies();
+    blacklisted_companies=NULL;
+    //      ALL INITIAL FILE READING SHIT HERE  (done?)
 
     for(time=0;time<=1440;time++)
     {
+        time2string(time,stime);
+        events_reading(&line,stime,&all_companies,present_planes);
+        sort_all_lists(present_planes,all_companies,blacklisted_companies,time);
         if(time%5==0) //Player input every 5 min
         {
-            //assign_takeoff()
+
 
 
             // ALL PLAYER INPUT AND INTERACTIONS HERE
@@ -30,34 +33,39 @@ int main()
 
 
 
-            movetoqueue(Takeoff_wait,Takeoff_now,time);
-            sortwaitinglist(Takeoff_wait);
+            sort_all_lists(present_planes,all_companies,blacklisted_companies,time);
         }
 
 
                 //EVENTS
-        if(Emergency(Landing))//Emergency landing
+        if(present_planes->emergency!=NULL)//Emergency landing
         {
 
             // REGISTER EVENT
 
-            Landing=Landing->next_waiting;
+            present_planes->emergency=present_planes->emergency->next_waiting;
         }
-        else if(Takingoff(Takeoff_now,time))//Take offs
+        else if(Takingoff(present_planes->takeoff,time,blacklisted_companies))//Take offs
         {
 
             // REGISTER EVENT
 
-            Takeoff_now->first=Takeoff_now->first->next_waiting;
+            present_planes->takeoff->first=present_planes->takeoff->first->next_waiting;
         }
-        else if(Landing!=NULL)//Landings & Blacklisted landings
+        else if(present_planes->blacklist!=NULL)//Blacklisted landings
         {
 
             // REGISTER EVENT
 
-            Landing=Landing->next_waiting;
+            present_planes->blacklist=present_planes->blacklist->next_waiting;
         }
-        sortwaitinglist(Landing);
+        else if(present_planes->landing!=NULL)//Landings
+        {
+
+            // REGISTER EVENT
+
+            present_planes->landing=present_planes->landing->next_waiting;
+        }
     }/*
 
     //Actually to test the viability of functions

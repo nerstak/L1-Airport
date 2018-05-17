@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include "data_access.h"
 
-Company * new_company(char *name,char *acronym)
+Company * new_company(char *name,char *acronym) //creates a new company from name and acronym
 {
     Company * newComp=malloc(sizeof(Company));
     strcpy(newComp->name,name);
@@ -11,7 +11,7 @@ Company * new_company(char *name,char *acronym)
     return newComp;
 }
 
-void new_cell_company(Companies_list * list_company,char *name,char *acronym)
+void new_cell_company(Companies_list * list_company,char *name,char *acronym)//adds a cell company to the list of companies
 {
     Companies_list cursor_company;
     cursor_company=*list_company;
@@ -34,7 +34,7 @@ void new_cell_company(Companies_list * list_company,char *name,char *acronym)
     }
 }
 
-Plane * new_plane(char *id, int comsumption, int fuel, char *takeoff_time, Company *ptr_comp)
+Plane * new_plane(char *id, int comsumption, int fuel, char *takeoff_time, Company *ptr_comp)//Creates a new Plane element
 {
     Plane * newPlane=malloc(sizeof(Plane));
     strcpy(newPlane->id,id);
@@ -45,7 +45,7 @@ Plane * new_plane(char *id, int comsumption, int fuel, char *takeoff_time, Compa
     return newPlane;
 }
 
-void new_cell_plane(char *id,int comsumption, int fuel, char *takeoff_time, Company *ptr_comp)
+void new_cell_plane(char *id,int comsumption, int fuel, char *takeoff_time, Company *ptr_comp) // Creates a plane in a company's list
 {
     Planes_list cursor_plane;
     cursor_plane=ptr_comp->planes_company;
@@ -67,13 +67,14 @@ void new_cell_plane(char *id,int comsumption, int fuel, char *takeoff_time, Comp
             cursor_plane=cursor_plane->next_plane_company;
         }
         cursor_plane->next_plane_company=newCellPlane;
+        newCellPlane->previous_plane_company=cursor_plane;                          //Theo added this line, remove it if I goofed up
     }
 
 
 
 }
 
-Company * search_company(Companies_list * list_company, char * acronym)
+Company * search_company(Companies_list * list_company, char * acronym) //Goes through a list of companies to find a company from an acronym
 {
     Companies_list cursor_company;
     cursor_company=*list_company;
@@ -115,7 +116,15 @@ int presence_in_lists(Planes_list list_planes, char * id) //If a plane is in a l
 }
 
 
-
+void init_present_planes(lists_present_planes * present_planes)
+{
+    present_planes->blacklist=NULL;
+    present_planes->boarding=NULL;
+    present_planes->emergency=NULL;
+    present_planes->landing=NULL;
+    present_planes->takeoff->first=NULL;
+    present_planes->takeoff->last=NULL;
+}
 
 
 void initTakeoff(Takeoff_list* Que)
@@ -140,19 +149,12 @@ void pushTakeoff(Takeoff_list* Que, Cell_plane *nElt)
 
 Cell_plane* popTakeoff(Takeoff_list* Que)
 {
+    Cell_plane * cur;
+    cur=Que->first;
+    Que->first=cur->next_waiting;
     if(Que->first==NULL)
-    {
-        return NULL;
-    }
-    else
-    {
-        Cell_plane * cur;
-        cur=Que->first;
-        Que->first=cur->next_waiting;
-        if(Que->first==NULL)
-            Que->last=NULL;
-        return cur;
-    }
+        Que->last=NULL;
+    return cur;
 }
 
 /*void displayTakeoff(Takeoff_list *Que)

@@ -22,6 +22,66 @@ int time2int(char * stime) //converts a clock time string to system time
     return (atoi(h)*60)+atoi(m);
 }
 
+
+void sort_all_lists(lists_present_planes * present_planes,Companies_list all_companies,Companies_list blacklisted_companies,int time)
+{
+    //order landing and take off list
+    sortwaitinglist(present_planes->landing);
+    sortwaitinglist(present_planes->boarding);
+    //boarding to take off unless blacklisted
+    move2queue(present_planes->boarding,present_planes->takeoff,time,&blacklisted_companies);
+    //extract landing to emergency
+    while(Emergency(present_planes->landing))
+    {
+        move_plane_lists(present_planes->landing,present_planes->emergency);
+    }
+    //extract landing to blacklisted
+    extract_blacklisted(present_planes->blacklist,present_planes->landing,blacklisted_companies);
+    //sort blacklisted
+    sortwaitinglist(present_planes->blacklist);
+    //extract blacklisted to emergency
+    while(Emergency(present_planes->blacklist))
+    {
+        move_plane_lists(present_planes->blacklist,present_planes->emergency);
+    }
+    //sort emergency
+    sortwaitinglist(present_planes->emergency);
+}
+
+void extract_blacklisted(Planes_list black_landings,Planes_list landings,Companies_list blacklisted_companies)
+{
+    Planes_list prev,cur;
+    int empty=0;
+    while(empty==0)
+    {
+        if(landings==NULL)
+            empty=1;
+        else if(search_company(&blacklisted_companies,landings->plane.company->acronym)!=NULL)
+            move_plane_lists(landings,black_landings);
+        else
+            empty=1;
+    }
+    if(landings!=NULL)
+    {
+        prev=landings;
+        cur=prev;
+        while(cur!=NULL)
+        {
+            if(search_company(&blacklisted_companies,landings->plane.company->acronym)!=NULL)
+            {
+                move_plane_lists(cur,black_landings);
+                prev->next_waiting=cur;
+            }
+            prev=prev->next_waiting;
+            if(cur!=NULL)
+                cur=cur->next_waiting;
+        }
+    }
+}
+
+        //search_company(blacklisted_companies,Takeoff->first->plane.company->acronym)!=NULL
+
+
 void sortwaitinglist(Planes_list PlaneL) //Sorts the landing and take off waiting lists in order of time or fuel time
 {
     if(PlaneL!=NULL)
@@ -74,12 +134,6 @@ int PlanePriority(Plane * plane) //Used in sorting function to determine priorit
     }
     else
     {
-        /*
-        if(Fueltime(plane)>5 && PLANE IS BLACKLISTED  ) //This is to put blacklisted planes as less important than emergency but more than normal. It is also a very shitty system
-        {
-            return 6;
-        }
-        */
         return Fueltime(plane);
     }
 }
@@ -101,16 +155,43 @@ int Emergency(Planes_list Landing) //sees if a plane has less than 5 mins remain
     return 0;
 }
 
-int Takingoff(Takeoff_list * Takeoff,int time) //Sees if a plane is scheduled for takeoff
+
+void move_plane_lists(Planes_list ini,Planes_list dest)
+{
+    Planes_list cur=dest;
+    if(cur==NULL)
+    {
+        dest=ini;
+        ini=ini->next_waiting;
+        dest->next_waiting=NULL;
+    }
+    else
+    {
+        while(cur->next_waiting!=NULL)
+        {
+            cur=cur->next_waiting;
+        }
+        cur->next_waiting=ini;
+        ini=ini->next_waiting;
+        cur->next_waiting->next_waiting=NULL;
+    }
+}
+
+int Takingoff(Takeoff_list * Takeoff,int time,Companies_list * blacklisted_companies) //Sees if a plane is scheduled for takeoff
 {
     if(Takeoff->first!=NULL)
     {
-        /*
-        while( PLANE IS BLACKLISTED )
+        int blacklistcheck=0;
+        while(blacklistcheck==0)
         {
-            Takeoff->first=Takeoff->first->next_waiting;
+            if(Takeoff->first==NULL)
+                blacklistcheck=1;
+            else if(search_company(blacklisted_companies,Takeoff->first->plane.company->acronym)!=NULL)
+                Takeoff->first=Takeoff->first->next_waiting;
+            else
+                blacklistcheck=1;
         }
-        */
+
         if(Takeoff->first!=NULL)
         {
             if(time2int(Takeoff->first->plane.takeoff_time)<=time)
@@ -122,7 +203,7 @@ int Takingoff(Takeoff_list * Takeoff,int time) //Sees if a plane is scheduled fo
     return 0;
 }
 
-void movetoqueue(Planes_list wait,Takeoff_list * immediate,int time)// MOves plane from the takeoff wait list to the taking off queue.
+void move2queue(Planes_list wait,Takeoff_list * immediate,int time,Companies_list * blacklisted_companies)// Moves plane from the takeoff wait list to the taking off queue.
 {
     if(wait!=NULL)
     {
@@ -141,11 +222,18 @@ void movetoqueue(Planes_list wait,Takeoff_list * immediate,int time)// MOves pla
         {
             if(time2int(wait->plane.takeoff_time)<time+5)
             {
-                immediate->last->next_waiting=wait;
-                immediate->last=wait;
-                wait=wait->next_waiting;
-                immediate->last->next_waiting=NULL;
-                numscheduled++;
+                if(search_company(blacklisted_companies,wait->plane.company->acronym)!=NULL) //if blacklisted, ignore
+                {
+                    wait=wait->next_waiting;
+                }
+                else
+                {
+                    immediate->last->next_waiting=wait;
+                    immediate->last=wait;
+                    wait=wait->next_waiting;
+                    immediate->last->next_waiting=NULL;
+                    numscheduled++;
+                }
             }
             else
             {

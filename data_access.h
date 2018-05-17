@@ -49,10 +49,11 @@ typedef struct Takeoff_list{
     Planes_list last;
 }Takeoff_list;
 
-typedef struct lists_present_planes{
+typedef struct list_present_planes{
     Takeoff_list * takeoff;
     Planes_list boarding;
     Planes_list emergency;
+    Planes_list blacklist;
     Planes_list landing;
 } lists_present_planes;
 
@@ -70,4 +71,5 @@ void new_cell_plane(char *id,int comsumption, int fuel, char *takeoff_time, Comp
 Company * search_company(Companies_list * list_company, char * acronym); //Search a company through an acronym
 Cell_plane * search_cell_plane(Planes_list * planes_company, char * name); //Search a plane through an ID
 
+void init_present_planes(lists_present_planes * present_planes);
 #endif // DATA_ACCESS_H_INCLUDED

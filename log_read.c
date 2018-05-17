@@ -4,7 +4,7 @@
 #include "log_read.h"
 #include "data_access.h"
 
-void seperate(int beginning, int ending, char * words, char * result)
+void seperate(int beginning, int ending, char * words, char * result) //Takes a string (words) and the range of chars it should take from that string and puts them in result
 {
     char temp[2];
     strcpy(result,"");
@@ -16,7 +16,7 @@ void seperate(int beginning, int ending, char * words, char * result)
     }
 }
 
-char * events_reading(int *num_line, char *time, Companies_list * list_company, lists_present_planes *list_planes_used)
+char * events_reading(int *num_line, char *time, Companies_list * list_company, lists_present_planes *list_planes_used) //reads a line and sees if it is time to run that script, if so it runs that script
 {
     FILE * events_file = NULL; //Opening the file events.log
     char line[100],time_event[5],temp[2];
@@ -56,7 +56,7 @@ void events_execution(char *event,Companies_list * list_company, lists_present_p
         seperate(0,6,event,id);
         printf("Acr: %s\nName: %s\n",acro_comp,id);
         ptr_comp=search_company(list_company,acro_comp);
-        if(ptr_comp==NULL)//Creation of the company if it doesn't exist
+        if(ptr_comp==NULL)//Creation of the company if it doesn't exist                     YO par contre je crois pas qu'on peut scripter un truc pour les compagnies si elle n'existent pas. Je pense que toute les companies sont des le depart dans companies.cfg
         {
             char new_name_comp[15];
             printf("Name of the company corresponding to \"%s\"?",acro_comp);
@@ -64,7 +64,7 @@ void events_execution(char *event,Companies_list * list_company, lists_present_p
             new_cell_company(list_company,new_name_comp,acro_comp);
             ptr_comp=search_company(list_company,acro_comp);
         }
-        if(presence_in_lists(list_planes_used->boarding,id)==0 && presence_in_lists(list_planes_used->landing,id)==0 && presence_in_lists(list_planes_used->emergency,id)==0 && presence_in_lists(list_planes_used->takeoff->first,id)==0) //Checking if the plane is not currently used
+        if(presence_in_lists(list_planes_used->boarding,id)==0 && presence_in_lists(list_planes_used->landing,id)==0 && presence_in_lists(list_planes_used->emergency,id)==0 && presence_in_lists(list_planes_used->takeoff->first,id)==0 && presence_in_lists(list_planes_used->blacklist,id)==0) //Checking if the plane is not currently used
         {
             char takeoff_time[5],fuel[3],consumption[3];
             Cell_plane * ptr_plane;
@@ -102,7 +102,7 @@ void events_execution(char *event,Companies_list * list_company, lists_present_p
     seperate(0,9,event,keyword);
     if(strcmp("BLACKLIST",keyword)==0)
     {
-        //Add to the dictionnary of blacklisted companies. Then, each turn verifies if the company's plane isn't on the list during sort, however go to emergency
+        //Add to the dictionnary of blacklisted companies. <Not here>---> Then, each turn verifies if the company's plane isn't on the list during sort, however go to emergency
     }
 }
 

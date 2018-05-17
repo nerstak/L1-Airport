@@ -56,11 +56,11 @@ void events_execution(char *event,Companies_list * list_company, lists_present_p
         seperate(0,6,event,id);
         printf("Acr: %s\nName: %s\n",acro_comp,id);
         ptr_comp=search_company(list_company,acro_comp);
-        if(ptr_comp==NULL)//Creation of the company if it doesn't exist                     YO par contre je crois pas qu'on peut scripter un truc pour les compagnies si elle n'existent pas. Je pense que toute les companies sont des le depart dans companies.cfg
+        if(ptr_comp==NULL)//Creation of the company if it doesn't exist
         {
             char new_name_comp[15];
             printf("Name of the company corresponding to \"%s\"?",acro_comp);
-            scanf("%s",new_name_comp);
+            scanf("%s",&new_name_comp);
             new_cell_company(list_company,new_name_comp,acro_comp);
             ptr_comp=search_company(list_company,acro_comp);
         }
@@ -79,9 +79,10 @@ void events_execution(char *event,Companies_list * list_company, lists_present_p
             }
             else //Or updating the parameters
             {
+                strcpy(ptr_plane->plane.takeoff_time,takeoff_time);
                 ptr_plane->plane.fuel=atoi(fuel);
                 ptr_plane->plane.comsumption=atoi(fuel);
-                strcpy(ptr_plane->plane.takeoff_time,takeoff_time);
+
             }
             switch(event[7])
             {

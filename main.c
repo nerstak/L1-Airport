@@ -12,7 +12,7 @@ int main()
     // initializing variables
     int time;
     lists_present_planes * present_planes;
-    init_present_planes(present_planes);
+    init_present_planes(&present_planes);
     Companies_list all_companies, blacklisted_companies;
     all_companies=setup_companies();
     blacklisted_companies=NULL;
@@ -25,7 +25,7 @@ int main()
         sort_all_lists(present_planes,all_companies,blacklisted_companies,time);
         if(time%5==0) //Player input every 5 min
         {
-
+            printf("%d \n",time);
 
 
             // ALL PLAYER INPUT AND INTERACTIONS HERE
@@ -42,14 +42,14 @@ int main()
         {
 
             // REGISTER EVENT
-
+            printf(" \n EMERGENCY \n");
             present_planes->emergency=present_planes->emergency->next_waiting;
         }
         else if(Takingoff(present_planes->takeoff,time,blacklisted_companies))//Take offs
         {
 
             // REGISTER EVENT
-
+            printf(" \n taco\n");
             present_planes->takeoff->first=present_planes->takeoff->first->next_waiting;
         }
         else if(present_planes->blacklist!=NULL)//Blacklisted landings
@@ -63,7 +63,7 @@ int main()
         {
 
             // REGISTER EVENT
-
+            printf(" \n lann \n");
             present_planes->landing=present_planes->landing->next_waiting;
         }
     }/*

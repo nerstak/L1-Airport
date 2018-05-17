@@ -26,8 +26,12 @@ int time2int(char * stime) //converts a clock time string to system time
 void sort_all_lists(lists_present_planes * present_planes,Companies_list all_companies,Companies_list blacklisted_companies,int time)
 {
     //order landing and take off list
-    sortwaitinglist(present_planes->landing);
-    sortwaitinglist(present_planes->boarding);
+    if(present_planes->landing!=NULL)
+    {
+        sortwaitinglist(present_planes->landing);
+    }
+    if(present_planes->boarding!=NULL)
+        sortwaitinglist(present_planes->boarding);
     //boarding to take off unless blacklisted
     move2queue(present_planes->boarding,present_planes->takeoff,time,&blacklisted_companies);
     //extract landing to emergency
@@ -140,7 +144,7 @@ int PlanePriority(Plane * plane) //Used in sorting function to determine priorit
 
 int Fueltime(Plane * plane) //calculates number of minutes remaining in the air
 {
-    return plane->fuel/plane->comsumption;
+    return (plane->fuel)/(plane->comsumption);
 }
 
 int Emergency(Planes_list Landing) //sees if a plane has less than 5 mins remaining in the tank
@@ -156,14 +160,19 @@ int Emergency(Planes_list Landing) //sees if a plane has less than 5 mins remain
 }
 
 
-void move_plane_lists(Planes_list ini,Planes_list dest)
+void move_plane_lists(Planes_list  ini,Planes_list  dest)
 {
-    Planes_list cur=dest;
+    Planes_list  cur=dest;
+    printf(" YO   %s",ini->plane.id);
     if(cur==NULL)
     {
         dest=ini;
         ini=ini->next_waiting;
+        printf("dude?");
         dest->next_waiting=NULL;
+        printf("yyyyy");
+        printf("  %s",dest->plane.id);
+
     }
     else
     {

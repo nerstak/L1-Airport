@@ -116,14 +116,16 @@ int presence_in_lists(Planes_list list_planes, char * id) //If a plane is in a l
 }
 
 
-void init_present_planes(lists_present_planes * present_planes)
+void init_present_planes(lists_present_planes ** present_planes)
 {
-    present_planes->blacklist=NULL;
-    present_planes->boarding=NULL;
-    present_planes->emergency=NULL;
-    present_planes->landing=NULL;
-    present_planes->takeoff->first=NULL;
-    present_planes->takeoff->last=NULL;
+    *present_planes=malloc(sizeof(lists_present_planes));
+    (*present_planes)->blacklist=NULL;
+    (*present_planes)->boarding=NULL;
+    (*present_planes)->emergency=NULL;
+    (*present_planes)->landing=NULL;
+    (*present_planes)->takeoff=malloc(sizeof(Takeoff_list));
+    (*present_planes)->takeoff->first=NULL;
+    (*present_planes)->takeoff->last=NULL;
 }
 
 

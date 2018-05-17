@@ -11,7 +11,7 @@ void sortwaitinglist(Planes_list PlaneL);
 int PlanePriority(Plane * plane);
 int Fueltime(Plane * plane);
 int Emergency(Planes_list Landing);
-void move_plane_lists(Planes_list  ini,Planes_list  dest);
+void move_plane_lists(Planes_list * ini,Planes_list * dest);
 int Takingoff(Takeoff_list * Takeoff,int time,Companies_list * blacklisted_companies);
 void move2queue(Planes_list wait,Takeoff_list * immediate,int time,Companies_list * blacklisted_companies);
 

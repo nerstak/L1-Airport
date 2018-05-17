@@ -37,7 +37,8 @@ void sort_all_lists(lists_present_planes * present_planes,Companies_list all_com
     //extract landing to emergency
     while(Emergency(present_planes->landing))
     {
-        move_plane_lists(present_planes->landing,present_planes->emergency);
+        move_plane_lists(&(present_planes->landing),&(present_planes->emergency));
+        printf(" YoooO   %s",present_planes->emergency->plane.id);
     }
     //extract landing to blacklisted
     extract_blacklisted(present_planes->blacklist,present_planes->landing,blacklisted_companies);
@@ -160,29 +161,29 @@ int Emergency(Planes_list Landing) //sees if a plane has less than 5 mins remain
 }
 
 
-void move_plane_lists(Planes_list  ini,Planes_list  dest)
+void move_plane_lists(Planes_list  (*ini),Planes_list  (*dest))
 {
-    Planes_list  cur=dest;
-    printf(" YO   %s",ini->plane.id);
-    if(cur==NULL)
+    Planes_list  *cur=dest;
+    printf(" YO   %s",(*ini)->plane.id);
+    if((*cur)==NULL)
     {
-        dest=ini;
-        ini=ini->next_waiting;
+        (*dest)=*ini;
+        (*ini)=(*ini)->next_waiting;
         printf("dude?");
-        dest->next_waiting=NULL;
+        (*dest)->next_waiting=NULL;
         printf("yyyyy");
-        printf("  %s",dest->plane.id);
+        printf("  %s     %s",(*dest)->plane.id,(*ini)->plane.id);
 
     }
     else
     {
-        while(cur->next_waiting!=NULL)
+        while((*cur)->next_waiting!=NULL)
         {
-            cur=cur->next_waiting;
+            (*cur)=(*cur)->next_waiting;
         }
-        cur->next_waiting=ini;
-        ini=ini->next_waiting;
-        cur->next_waiting->next_waiting=NULL;
+        (*cur)->next_waiting=(*ini);
+        (*ini)=(*ini)->next_waiting;
+        (*cur)->next_waiting->next_waiting=NULL;
     }
 }
 

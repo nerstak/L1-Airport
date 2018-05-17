@@ -60,7 +60,7 @@ void events_execution(char *event,Companies_list * list_company, lists_present_p
         {
             char new_name_comp[15];
             printf("Name of the company corresponding to \"%s\"?",acro_comp);
-            scanf("%s",&new_name_comp);
+            scanf("%s",new_name_comp);
             new_cell_company(list_company,new_name_comp,acro_comp);
             ptr_comp=search_company(list_company,acro_comp);
         }

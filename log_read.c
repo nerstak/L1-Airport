@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-
+#include <string.h>
 #include "log_read.h"
 #include "data_access.h"
 
@@ -16,7 +16,7 @@ void seperate(int beginning, int ending, char * words, char * result) //Takes a 
     }
 }
 
-char * events_reading(int *num_line, char *time, Companies_list * list_company, lists_present_planes *list_planes_used) //reads a line and sees if it is time to run that script, if so it runs that script
+char * events_reading(int *num_line, char *time, Companies_list * list_company, Companies_list * blacklisted_company, lists_present_planes *list_planes_used) //reads a line and sees if it is time to run that script, if so it runs that script
 {
     FILE * events_file = NULL; //Opening the file events.log
     char line[100],time_event[5],temp[2];
@@ -34,7 +34,7 @@ char * events_reading(int *num_line, char *time, Companies_list * list_company, 
         while(fgets(line,25,events_file)!=NULL && line[4]!=":")
         {
             printf("%s\n",line);
-            events_execution(line,list_company,list_planes_used);
+            events_execution(line,list_company, blacklisted_company,list_planes_used);
         }
     }
     else
@@ -44,7 +44,7 @@ char * events_reading(int *num_line, char *time, Companies_list * list_company, 
 
 }
 
-void events_execution(char *event,Companies_list * list_company, lists_present_planes *list_planes_used)
+void events_execution(char *event,Companies_list * list_company, Companies_list * blacklisted_company,  lists_present_planes *list_planes_used)
 {
     //First decomposition
     char temp[2],type_event;
@@ -101,9 +101,19 @@ void events_execution(char *event,Companies_list * list_company, lists_present_p
 
     char keyword[10];
     seperate(0,9,event,keyword);
-    if(strcmp("BLACKLIST",keyword)==0)
+    if(strcmp("BLACKLIST",keyword)==0) ///BLACKLIST
     {
-        //Add to the dictionnary of blacklisted companies. <Not here>---> Then, each turn verifies if the company's plane isn't on the list during sort, however go to emergency
+        char acro_comp[4];
+        Companies_list ptr_comp;
+        seperate(10,13,event,acro_comp);
+        printf("%s!",acro_comp);
+        ptr_comp=search_company(list_company,acro_comp);
+        if(ptr_comp!=NULL)
+        {
+            new_cell_company(blacklisted_company,ptr_comp->company.name,ptr_comp->company.acronym);
+            printf("\nDONE\n");
+        }
+        //Add to the dictionnary of blacklisted companies.
     }
 }
 

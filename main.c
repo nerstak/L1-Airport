@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "actions.h"
 #include "data_access.h"
 #include "log_read.h"
@@ -8,7 +9,6 @@ int main()
 {
     int line=0;
     char stime[5];
-    //events_reading(&line,"1531");
     // initializing variables
     int time;
     lists_present_planes * present_planes;
@@ -21,11 +21,15 @@ int main()
     for(time=0;time<=1440;time++)
     {
         time2string(time,stime);
-        events_reading(&line,stime,&all_companies,present_planes);
+        events_reading(&line,stime,&all_companies,&blacklisted_companies,present_planes);
+        if(strcmp(stime,"1135")==0 && time==695);
+        {
+            printf("CB:%s:\n",blacklisted_companies->company.name);
+        }
         sort_all_lists(present_planes,all_companies,blacklisted_companies,time);
         if(time%5==0) //Player input every 5 min
         {
-            printf("%d \n",time);
+            printf("%d-%s\n",time,stime);
 
 
             // ALL PLAYER INPUT AND INTERACTIONS HERE

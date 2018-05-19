@@ -6,10 +6,7 @@
 
 void time2string(int intime, char * stime) //converts system time that goes from 0 to 1440 to a string of clock time 0000 to 2400
 {
-    stime[0]=((intime/60)/10)+48;
-    stime[1]=((intime/60)%10)+48;
-    stime[2]=((intime%60)/10)+48;
-    stime[3]=((intime%60)%10)+48;
+    sprintf(stime,"%d%d%d%d",(intime/60)/10,(intime/60)%10,(intime%60)/10,(intime%60)%10);
 }
 
 int time2int(char * stime) //converts a clock time string to system time
@@ -238,7 +235,10 @@ void move2queue(Planes_list wait,Takeoff_list * immediate,int time,Companies_lis
                 }
                 else
                 {
-                    immediate->last->next_waiting=wait;
+                    if(immediate->last==NULL)
+                        immediate->last=wait;
+                    else
+                        immediate->last->next_waiting=wait;
                     immediate->last=wait;
                     wait=wait->next_waiting;
                     immediate->last->next_waiting=NULL;

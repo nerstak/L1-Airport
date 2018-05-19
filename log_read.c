@@ -41,7 +41,7 @@ char * events_reading(int *num_line, char *time, Companies_list * list_company, 
     {
         printf("Nope\n");
     }
-
+    fclose(events_file);
 }
 
 void events_execution(char *event,Companies_list * list_company, Companies_list * blacklisted_company,  lists_present_planes *list_planes_used)
@@ -117,7 +117,7 @@ void events_execution(char *event,Companies_list * list_company, Companies_list 
     }
 }
 
-Companies_list  setup_companies()
+Companies_list setup_companies()
 {
     Companies_list * list_company=malloc(sizeof(Companies_list));
     *list_company=NULL;
@@ -167,4 +167,25 @@ void add_to_list(Planes_list * list,Cell_plane *newCellPlane)
     else
         cursor->next_waiting=newCellPlane;
     printf("a%d",newCellPlane);
+}
+
+void read_log(int lines_to_read)
+{
+    FILE * log_file = NULL; //Opening the file events.log
+    char line[100]={0,};
+    int i=0;
+    log_file = fopen("cfg/report.log","r");
+    if (log_file==NULL)
+    {
+        return NULL;
+    }
+    while(fgets(line,100,log_file)!=NULL && i<lines_to_read)
+    {
+        printf("%s\n",line);
+        if(i!=0 && i%9==0)
+            getchar();
+        ++i;
+    }
+    fclose(log_file);
+
 }

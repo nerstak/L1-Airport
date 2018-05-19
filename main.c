@@ -4,6 +4,7 @@
 #include "actions.h"
 #include "data_access.h"
 #include "log_read.h"
+#include "log_write.h"
 
 int main()
 {
@@ -16,6 +17,7 @@ int main()
     Companies_list all_companies, blacklisted_companies;
     all_companies=setup_companies();
     blacklisted_companies=NULL;
+    create_log();
     //      ALL INITIAL FILE READING SHIT HERE  (done?)
 
     for(time=0;time<=1440;time++)

@@ -10,4 +10,6 @@ void events_execution(char *event, Companies_list * list_company, Companies_list
 
 Companies_list setup_companies();
 
+void read_log(int lines_to_read)
+
 #endif // LOG_READ_H_INCLUDED

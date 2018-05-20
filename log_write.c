@@ -2,28 +2,16 @@
 #include <stdlib.h>
 #include "log_write.h"
 
-char * generate_action_log(char * type_action,Plane * plane_selected,char *stime)
+void generate_action_log(char action,Plane * plane_selected,char *stime,char * event)
 {
-    char line[20];
-    strcpy(line,plane_selected->id);
-    strcat(line,"-");
-    if(strcmp(type_action,"A_LANDING")==0 || strcmp(type_action,"U_LANDING")==0 || strcmp(type_action,"N_LANDING")==0 || strcmp(type_action,"CRASH"))
+    if(action=='D')
     {
-        line[7]=type_action[0];
-        strcat(line,"-");
-        strcat(line,stime);
-        strcat(line,"-");
-        strcat(line,plane_selected->fuel);
-        strcat(line,"-");
-        strcat(line,plane_selected->comsumption);
+        sprintf(event,"%s-%c-%s------",strupr(&(plane_selected->id)),action,stime);
     }
-    else if (strcmp(type_action,"TAKE_OFF"))
+    else
     {
-        line[7]='D';
-        strcat(line,"-");
-        strcat(line,stime);
+        sprintf(event,"%s-%c------%d%d-%d%d",strupr(&(plane_selected->id)),action,(plane_selected->fuel)/10,(plane_selected->fuel)%10,(plane_selected->comsumption)/10,(plane_selected->comsumption)%10);
     }
-    return line;
 }
 
 void create_log()
@@ -33,7 +21,7 @@ void create_log()
     fclose(log_file);
 }
 
-void write_action(char * type_action,Plane * plane_selected,char *stime)
+void write_action(char * event)
 {
     FILE * log_file = NULL; //Opening the log file
     char tmp[1];
@@ -42,6 +30,6 @@ void write_action(char * type_action,Plane * plane_selected,char *stime)
     {
         return NULL;
     }
-    fputs(generate(type_action,plane_selected,stime));
+    fputs(event,log_file);
     fclose(log_file);
 }

@@ -9,7 +9,7 @@
 int main()
 {
     int line=0;
-    char stime[5];
+    char stime[5],event[25];
     // initializing variables
     int time;
     lists_present_planes * present_planes;
@@ -24,21 +24,22 @@ int main()
     {
         time2string(time,stime);
         events_reading(&line,stime,&all_companies,&blacklisted_companies,present_planes);
+        /*
         if(strcmp(stime,"1135")==0 && time==695);
         {
             printf("CB:%s:\n",blacklisted_companies->company.name);
         }
+        */
         sort_all_lists(present_planes,all_companies,blacklisted_companies,time);
         if(time%5==0) //Player input every 5 min
         {
             printf("%d-%s\n",time,stime);
+            printf("CB:%s\n\n",blacklisted_companies->company.name);
 
 
             // ALL PLAYER INPUT AND INTERACTIONS HERE
 
-
-
-
+            getch();
             sort_all_lists(present_planes,all_companies,blacklisted_companies,time);
         }
 
@@ -48,20 +49,30 @@ int main()
         {
 
             // REGISTER EVENT
-            printf(" \n EMERGENCY \n");
+            if(present_planes->emergency->plane.fuel<=0)
+                generate_action_log('C',&(present_planes->emergency->plane),stime,event);
+            else
+                generate_action_log('U',&(present_planes->emergency->plane),stime,event);
+
+            printf("EVENT:        %s\n",event);
+            write_action(event);
             present_planes->emergency=present_planes->emergency->next_waiting;
         }
         else if(Takingoff(present_planes->takeoff,time,blacklisted_companies))//Take offs
         {
-
             // REGISTER EVENT
-            printf(" \n taco\n");
+            generate_action_log('D',&(present_planes->takeoff->first->plane),stime,event);
+            printf("EVENT:        %s\n",event);
+            write_action(event);
+
             present_planes->takeoff->first=present_planes->takeoff->first->next_waiting;
         }
         else if(present_planes->blacklist!=NULL)//Blacklisted landings
         {
-
             // REGISTER EVENT
+            generate_action_log('N',&(present_planes->blacklist->plane),stime,event);
+            printf("EVENT:        %s\n",event);
+            write_action(event);
 
             present_planes->blacklist=present_planes->blacklist->next_waiting;
         }
@@ -69,9 +80,16 @@ int main()
         {
 
             // REGISTER EVENT
-            printf(" \n lann \n");
+            generate_action_log('A',&(present_planes->landing->plane),stime,event);
+            printf("EVENT:        %s\n",event);
+            write_action(event);
+
             present_planes->landing=present_planes->landing->next_waiting;
         }
+
+
+        all_fuel_Use(present_planes);
+
     }/*
 
     //Actually to test the viability of functions
@@ -96,4 +114,5 @@ int main()
     printf("%d\n",presence_in_lists(list_planes_used.boarding,"DCT043"));
     printf("--%s\n",list_planes_used.landing->plane.id);
     //new_cell_company(&list_company);*/
+    return 0;
 }

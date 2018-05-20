@@ -76,30 +76,42 @@ void new_cell_plane(char *id,int comsumption, int fuel, char *takeoff_time, Comp
 
 Company * search_company(Companies_list * list_company, char * acronym) //Goes through a list of companies to find a company from an acronym
 {
-    Companies_list cursor_company;
-    cursor_company=*list_company;
-    while(cursor_company != NULL && strcmp(acronym,cursor_company->company.acronym)!=0)
+    if(list_company!=NULL)
     {
-        cursor_company=cursor_company->next_company;
-    }
-    if(cursor_company!=NULL && strcmp(acronym,cursor_company->company.acronym)==0)
-    {
-        return cursor_company;
+        Companies_list cursor_company;
+        cursor_company=*list_company;
+        int checked=1;
+        while(cursor_company != NULL && checked)
+        {
+            if(strcmp(acronym,cursor_company->company.acronym)==0)
+                checked=0;
+            else
+                cursor_company=cursor_company->next_company;
+        }
+        if(cursor_company!=NULL)
+        {
+            if(strcmp(acronym,cursor_company->company.acronym)==0)
+                return cursor_company;
+        }
     }
     return NULL;
 }
 
-Cell_plane * search_cell_plane(Planes_list * planes_company, char * id) //Search a plane in the list of company, using the ID
+Cell_plane * search_cell_plane(Planes_list planes_company, char * id) //Search a plane in the list of company, using the ID
 {
-    Planes_list cursor_plane;
-    cursor_plane=*planes_company;
-    while(cursor_plane != NULL && strcmp(id,cursor_plane->plane.id)!=0)
+    Planes_list cursor_plane=planes_company;
+    int checked=1;
+    while(cursor_plane != NULL && checked)
     {
-        cursor_plane=cursor_plane->next_plane_company;
+        if(strcmp(id,cursor_plane->plane.id)==0)
+            checked=0;
+        else
+            cursor_plane=cursor_plane->next_plane_company;
     }
-    if(cursor_plane != NULL && strcmp(id,cursor_plane->plane.id)==0)
+    if(cursor_plane != NULL)
     {
-        return cursor_plane;
+        if(strcmp(id,cursor_plane->plane.id)==0)
+            return cursor_plane;
     }
     return NULL;
 }
@@ -135,29 +147,6 @@ void initTakeoff(Takeoff_list* Que)
     Que->last=NULL;
 }
 
-void pushTakeoff(Takeoff_list* Que, Cell_plane *nElt)
-{
-    if (Que->last==NULL)
-    {
-        Que->last=nElt;
-        Que->first=nElt;
-    }
-    else
-    {
-        Que->last->next_waiting=nElt;
-        Que->last=nElt;
-    }
-}
-
-Cell_plane* popTakeoff(Takeoff_list* Que)
-{
-    Cell_plane * cur;
-    cur=Que->first;
-    Que->first=cur->next_waiting;
-    if(Que->first==NULL)
-        Que->last=NULL;
-    return cur;
-}
 
 /*void displayTakeoff(Takeoff_list *Que)
 {

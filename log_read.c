@@ -28,10 +28,10 @@ char * events_reading(int *num_line, char *time, Companies_list * list_company, 
     fgets(line,5,events_file);
     seperate(0,4,line,time_event);
     ++*num_line;
-    printf("Time_file=%s\n",time_event);
     if(strcmp(time,time_event)==0)
     {
-        while(fgets(line,25,events_file)!=NULL && line[4]!=":")
+        printf("Time_file=%s\n",time_event);
+        while(fgets(line,25,events_file)!=NULL && line[4]!=':')
         {
             printf("%s\n",line);
             events_execution(line,list_company, blacklisted_company,list_planes_used);
@@ -39,7 +39,7 @@ char * events_reading(int *num_line, char *time, Companies_list * list_company, 
     }
     else
     {
-        printf("Nope\n");
+        //printf("Nope\n");
     }
     fclose(events_file);
 }
@@ -68,14 +68,15 @@ void events_execution(char *event,Companies_list * list_company, Companies_list 
         {
             char takeoff_time[5],fuel[3],consumption[3];
             Cell_plane * ptr_plane;
-            ptr_plane=search_cell_plane(&ptr_comp->company.planes_company,id);
+            printf("how bout this %s",id);
+            ptr_plane=search_cell_plane(ptr_comp->company.planes_company,id);
             seperate(9,13,event,takeoff_time);
             seperate(14,16,event,fuel);
             seperate(17,19,event,consumption);
             if(ptr_plane==NULL) //Creating the plane if it doesn't exists
             {
                 new_cell_plane(id,atoi(consumption),atoi(fuel),takeoff_time,ptr_comp);
-                ptr_plane=search_cell_plane(&ptr_comp->company.planes_company,id);
+                ptr_plane=search_cell_plane(ptr_comp->company.planes_company,id);
             }
             else //Or updating the parameters
             {

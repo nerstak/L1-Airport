@@ -25,41 +25,41 @@ void sort_all_lists(lists_present_planes * present_planes,Companies_list all_com
     //order landing and take off list
     if(present_planes->landing!=NULL)
     {
-        sortwaitinglist(present_planes->landing);
+        sortwaitinglist(&(present_planes->landing));
     }
     if(present_planes->boarding!=NULL)
-        sortwaitinglist(present_planes->boarding);
+        sortwaitinglist(&(present_planes->boarding));
     //boarding to take off unless blacklisted
-    move2queue(present_planes->boarding,present_planes->takeoff,time,&blacklisted_companies);
+    move2queue(&(present_planes->boarding),present_planes->takeoff,time,&blacklisted_companies);
     //extract landing to emergency
     while(Emergency(present_planes->landing))
     {
         move_plane_lists(&(present_planes->landing),&(present_planes->emergency));
-        printf(" YoooO   %s",present_planes->emergency->plane.id);
     }
     //extract landing to blacklisted
-    extract_blacklisted(present_planes->blacklist,present_planes->landing,blacklisted_companies);
+    extract_blacklisted(&(present_planes->blacklist),&(present_planes->landing),blacklisted_companies);
     //sort blacklisted
-    sortwaitinglist(present_planes->blacklist);
+    sortwaitinglist(&(present_planes->blacklist));
     //extract blacklisted to emergency
     while(Emergency(present_planes->blacklist))
     {
-        move_plane_lists(present_planes->blacklist,present_planes->emergency);
+        move_plane_lists(&(present_planes->blacklist),&(present_planes->emergency));
     }
     //sort emergency
-    sortwaitinglist(present_planes->emergency);
+    sortwaitinglist(&(present_planes->emergency));
 }
 
-void extract_blacklisted(Planes_list black_landings,Planes_list landings,Companies_list blacklisted_companies)
+void extract_blacklisted(Planes_list * blacklist_landings,Planes_list * normal_landings,Companies_list blacklisted_companies)
 {
-    Planes_list prev,cur;
+    Planes_list prev,cur,landings=*normal_landings;
+
     int empty=0;
     while(empty==0)
     {
         if(landings==NULL)
             empty=1;
         else if(search_company(&blacklisted_companies,landings->plane.company->acronym)!=NULL)
-            move_plane_lists(landings,black_landings);
+            move_plane_lists(normal_landings,blacklist_landings);
         else
             empty=1;
     }
@@ -71,7 +71,7 @@ void extract_blacklisted(Planes_list black_landings,Planes_list landings,Compani
         {
             if(search_company(&blacklisted_companies,landings->plane.company->acronym)!=NULL)
             {
-                move_plane_lists(cur,black_landings);
+                move_plane_lists(&cur,blacklist_landings);
                 prev->next_waiting=cur;
             }
             prev=prev->next_waiting;
@@ -84,10 +84,11 @@ void extract_blacklisted(Planes_list black_landings,Planes_list landings,Compani
         //search_company(blacklisted_companies,Takeoff->first->plane.company->acronym)!=NULL
 
 
-void sortwaitinglist(Planes_list PlaneL) //Sorts the landing and take off waiting lists in order of time or fuel time
+void sortwaitinglist(Planes_list * Planes) //Sorts the landing and take off waiting lists in order of time or fuel time
 {
-    if(PlaneL!=NULL)
+    if(*Planes!=NULL)
     {
+        Planes_list PlaneL=*Planes;
         int unsorted=1;
         Cell_plane *cur,*prev,*follow;
         while(unsorted)
@@ -158,19 +159,14 @@ int Emergency(Planes_list Landing) //sees if a plane has less than 5 mins remain
 }
 
 
-void move_plane_lists(Planes_list  (*ini),Planes_list  (*dest))
+void move_plane_lists(Planes_list  *ini,Planes_list  *dest)
 {
     Planes_list  *cur=dest;
-    printf(" YO   %s",(*ini)->plane.id);
     if((*cur)==NULL)
     {
         (*dest)=*ini;
         (*ini)=(*ini)->next_waiting;
-        printf("dude?");
         (*dest)->next_waiting=NULL;
-        printf("yyyyy");
-        printf("  %s     %s",(*dest)->plane.id,(*ini)->plane.id);
-
     }
     else
     {
@@ -184,7 +180,7 @@ void move_plane_lists(Planes_list  (*ini),Planes_list  (*dest))
     }
 }
 
-int Takingoff(Takeoff_list * Takeoff,int time,Companies_list * blacklisted_companies) //Sees if a plane is scheduled for takeoff
+int Takingoff(Takeoff_list * Takeoff,int time,Companies_list blacklisted_companies) //Sees if a plane is scheduled for takeoff
 {
     if(Takeoff->first!=NULL)
     {
@@ -193,7 +189,7 @@ int Takingoff(Takeoff_list * Takeoff,int time,Companies_list * blacklisted_compa
         {
             if(Takeoff->first==NULL)
                 blacklistcheck=1;
-            else if(search_company(blacklisted_companies,Takeoff->first->plane.company->acronym)!=NULL)
+            else if(search_company(&blacklisted_companies,Takeoff->first->plane.company->acronym)!=NULL)
                 Takeoff->first=Takeoff->first->next_waiting;
             else
                 blacklistcheck=1;
@@ -210,10 +206,11 @@ int Takingoff(Takeoff_list * Takeoff,int time,Companies_list * blacklisted_compa
     return 0;
 }
 
-void move2queue(Planes_list wait,Takeoff_list * immediate,int time,Companies_list * blacklisted_companies)// Moves plane from the takeoff wait list to the taking off queue.
+void move2queue(Planes_list * waiting,Takeoff_list * immediate,int time,Companies_list * blacklisted_companies)// Moves plane from the takeoff wait list to the taking off queue.
 {
-    if(wait!=NULL)
+    if(*waiting!=NULL)
     {
+        Planes_list wait=*waiting;
         int numscheduled=0;
         Planes_list count=immediate->first;
         if(count!=NULL)
@@ -236,7 +233,11 @@ void move2queue(Planes_list wait,Takeoff_list * immediate,int time,Companies_lis
                 else
                 {
                     if(immediate->last==NULL)
+                    {
                         immediate->last=wait;
+                        immediate->first=wait;
+                    }
+
                     else
                         immediate->last->next_waiting=wait;
                     immediate->last=wait;
@@ -254,7 +255,23 @@ void move2queue(Planes_list wait,Takeoff_list * immediate,int time,Companies_lis
 }
 
 
+void all_fuel_Use(lists_present_planes * present_planes)
+{
+    use_fuel(&(present_planes->landing));
+    use_fuel(&(present_planes->blacklist));
+    use_fuel(&(present_planes->emergency));
+
+}
 
 
-
+void use_fuel(Planes_list * planesL)
+{
+    Planes_list PlanesL=*planesL;
+    Cell_plane * cur=PlanesL;
+    while(cur!=NULL)
+    {
+        cur->plane.fuel-=cur->plane.comsumption;
+        cur=cur->next_waiting;
+    }
+}
 

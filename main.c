@@ -8,7 +8,6 @@
 
 int main()
 {
-    int line=0;
     char stime[5],event[25];
     // initializing variables
     int time;
@@ -23,7 +22,7 @@ int main()
     for(time=0;time<=1440;time++)
     {
         time2string(time,stime);
-        events_reading(&line,stime,&all_companies,&blacklisted_companies,present_planes);
+        events_reading(stime,&all_companies,&blacklisted_companies,present_planes,stime);
         /*
         if(strcmp(stime,"1135")==0 && time==695);
         {
@@ -89,7 +88,9 @@ int main()
 
         all_fuel_Use(present_planes);
 
-    }/*
+    }
+    read_log(5);
+    /*
 
     //Actually to test the viability of functions
     int lm=0;

@@ -3,6 +3,7 @@
 #include <string.h>
 #include "log_read.h"
 #include "data_access.h"
+#include "actions.h"
 
 void seperate(int beginning, int ending, char * words, char * result) //Takes a string (words) and the range of chars it should take from that string and puts them in result
 {
@@ -16,7 +17,7 @@ void seperate(int beginning, int ending, char * words, char * result) //Takes a 
     }
 }
 
-char * events_reading(int *num_line, char *time, Companies_list * list_company, Companies_list * blacklisted_company, lists_present_planes *list_planes_used) //reads a line and sees if it is time to run that script, if so it runs that script
+char * events_reading(char *time, Companies_list * list_company, Companies_list * blacklisted_company, lists_present_planes *list_planes_used,char * stime) //reads a line and sees if it is time to run that script, if so it runs that script
 {
     FILE * events_file = NULL; //Opening the file events.log
     char line[100],time_event[5],temp[2];
@@ -37,21 +38,17 @@ char * events_reading(int *num_line, char *time, Companies_list * list_company, 
         //printf("Time_file=%s\n",time_event);
         while(fgets(line,25,events_file)!=NULL && line[4]!=':')
         {
-            events_execution(line,list_company, blacklisted_company,list_planes_used);
+            events_execution(line,list_company, blacklisted_company,list_planes_used,stime);
         }
-    }
-    else
-    {
-        //printf("Nope\n");
     }
     fclose(events_file);
 }
 
-void events_execution(char *event,Companies_list * list_company, Companies_list * blacklisted_company,  lists_present_planes *list_planes_used)
+void events_execution(char *event,Companies_list * list_company, Companies_list * blacklisted_company,  lists_present_planes *list_planes_used, char *stime)
 {
     //First decomposition
     char temp[2],type_event;
-    if((event[7]=='A' || event[7]=='D' || event[7]=='U')&& secure_entry(event)==1) //Checking if
+    if((event[7]=='A' || event[7]=='D' || event[7]=='U')&& secure_entry(event,stime)==1) //Checking if
     {
         char id[7],acro_comp[4];
         Companies_list ptr_comp;
@@ -174,13 +171,14 @@ void read_log(int lines_to_read)
     FILE * log_file = NULL; //Opening the file events.log
     char line[100]={0,};
     int i=0;
-    log_file = fopen("cfg/report.log","r");
+    log_file = fopen("report.log","r");
     if (log_file==NULL)
     {
         return NULL;
     }
     while(fgets(line,100,log_file)!=NULL && i<lines_to_read)
     {
+        printf("%s",line);
         if(i!=0 && i%9==0)
             getchar();
         ++i;
@@ -188,9 +186,10 @@ void read_log(int lines_to_read)
     fclose(log_file);
 }
 
-int secure_entry(char * line) //Function to verify that everything the user enters is conform to what we want
+int secure_entry(char * line, char * stime) //Function to verify that everything the user enters is conform to what we want
 {
     int secure=1;
+    char time_event[4];
     int i=0;
     for(i;i<3;i++)//Check that 3 first characters are letters
     {
@@ -211,6 +210,12 @@ int secure_entry(char * line) //Function to verify that everything the user ente
             if(line[i]<47 || line[i]>58)
                 secure=0;
         }
+        seperate(9,14,line,time_event);
+        if(time2int(time_event)<stime)
+        {
+            secure=0;
+        }
+
     }
     else if(line[7]=='U' || line[7]=='A')
     {

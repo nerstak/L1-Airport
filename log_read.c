@@ -34,7 +34,7 @@ char * events_reading(int *num_line, char *time, Companies_list * list_company, 
     }
     if(strcmp(time,time_event)==0)
     {
-        printf("Time_file=%s\n",time_event);
+        //printf("Time_file=%s\n",time_event);
         while(fgets(line,25,events_file)!=NULL && line[4]!=':')
         {
             events_execution(line,list_company, blacklisted_company,list_planes_used);
@@ -57,7 +57,7 @@ void events_execution(char *event,Companies_list * list_company, Companies_list 
         Companies_list ptr_comp;
         seperate(0,3,event,acro_comp);
         seperate(0,6,event,id);
-        printf("Acr: %s\nName: %s\n",acro_comp,id);
+        //printf("Acr: %s\nName: %s\n",acro_comp,id);
         ptr_comp=search_company(list_company,acro_comp);
         if(ptr_comp==NULL)//Creation of the company if it doesn't exist
         {
@@ -71,7 +71,6 @@ void events_execution(char *event,Companies_list * list_company, Companies_list 
         {
             char takeoff_time[5],fuel[3],consumption[3];
             Cell_plane * ptr_plane;
-            printf("how bout this %s",id);
             ptr_plane=search_cell_plane(ptr_comp->company.planes_company,id);
             seperate(9,13,event,takeoff_time);
             seperate(14,16,event,fuel);
@@ -110,12 +109,11 @@ void events_execution(char *event,Companies_list * list_company, Companies_list 
         char acro_comp[4];
         Companies_list ptr_comp;
         seperate(10,13,event,acro_comp);
-        printf("%s!",acro_comp);
+        //printf("%s!",acro_comp);
         ptr_comp=search_company(list_company,acro_comp);
         if(ptr_comp!=NULL)
         {
             new_cell_company(blacklisted_company,ptr_comp->company.name,ptr_comp->company.acronym);
-            printf("\nDONE\n");
         }
         //Add to the dictionnary of blacklisted companies.
     }
@@ -163,14 +161,12 @@ void add_to_list(Planes_list * list,Cell_plane *newCellPlane)
     cursor=*list;
     while(cursor!=NULL && cursor->next_waiting!=NULL)
     {
-        printf("zz %s\n",cursor->plane.id);
         cursor=cursor->next_waiting;
     }
     if(cursor==NULL)
         *list=newCellPlane;
     else
         cursor->next_waiting=newCellPlane;
-    printf("a%d",newCellPlane);
 }
 
 void read_log(int lines_to_read)
@@ -185,7 +181,6 @@ void read_log(int lines_to_read)
     }
     while(fgets(line,100,log_file)!=NULL && i<lines_to_read)
     {
-        printf("%s\n",line);
         if(i!=0 && i%9==0)
             getchar();
         ++i;
@@ -207,18 +202,20 @@ int secure_entry(char * line) //Function to verify that everything the user ente
         if(line[i]>'9')
             secure=0;
     }
-    if(line[6]!='-' || line[8]!='-' || line[13]!='-' || line[16]!='-')//Check that the union--sign are at the good place
+    if(line[6]!='-' || line[8]!='-' || line[13]!='-')//Check that the union--sign are at the good place
         secure=0;
     if(line[7]=='D')
     {
         for(i=9;i<13;i++)
         {
-            if(line[i]>90 || line[i]<65)
+            if(line[i]<47 || line[i]>58)
                 secure=0;
         }
     }
     else if(line[7]=='U' || line[7]=='A')
     {
+        if(line[16]!='-')
+            secure=0;
         i=14;
         while(i<19)
         {

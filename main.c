@@ -12,7 +12,6 @@ int main()
     char stime[5],event[25];
     // initializing variables
     int time;
-    printf("%d",secure_entry("ALI132-A-    -08-01"));
     lists_present_planes * present_planes;
     init_present_planes(&present_planes);
     Companies_list all_companies, blacklisted_companies;
@@ -34,13 +33,12 @@ int main()
         sort_all_lists(present_planes,all_companies,blacklisted_companies,time);
         if(time%5==0) //Player input every 5 min
         {
-            printf("%d-%s\n",time,stime);
-            printf("CB:%s\n\n",blacklisted_companies->company.name);
-
+            printf("\n%d-%s\n",time,stime);
+            //printf("CB:%s\n\n",blacklisted_companies->company.name);
 
             // ALL PLAYER INPUT AND INTERACTIONS HERE
 
-            //getchar();
+            //getch();
             sort_all_lists(present_planes,all_companies,blacklisted_companies,time);
         }
 

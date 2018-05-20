@@ -1,16 +1,17 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "log_write.h"
 
 void generate_action_log(char action,Plane * plane_selected,char *stime,char * event)
 {
     if(action=='D')
     {
-        sprintf(event,"%s-%c-%s------",strupr(&(plane_selected->id)),action,stime);
+        sprintf(event,"%s-%c-%s------",&(plane_selected->id),action,stime);
     }
     else
     {
-        sprintf(event,"%s-%c------%d%d-%d%d",strupr(&(plane_selected->id)),action,(plane_selected->fuel)/10,(plane_selected->fuel)%10,(plane_selected->comsumption)/10,(plane_selected->comsumption)%10);
+        sprintf(event,"%s-%c------%d%d-%d%d",&(plane_selected->id),action,(plane_selected->fuel)/10,(plane_selected->fuel)%10,(plane_selected->comsumption)/10,(plane_selected->comsumption)%10);
     }
 }
 
@@ -31,5 +32,6 @@ void write_action(char * event)
         return NULL;
     }
     fputs(event,log_file);
+    fputs("\n",log_file);
     fclose(log_file);
 }

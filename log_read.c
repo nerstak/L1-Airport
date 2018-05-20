@@ -20,20 +20,23 @@ char * events_reading(int *num_line, char *time, Companies_list * list_company, 
 {
     FILE * events_file = NULL; //Opening the file events.log
     char line[100],time_event[5],temp[2];
+    int follow=1;
     events_file = fopen("cfg/events.log","r");
     if (events_file==NULL)
     {
         return NULL;
     }
-    fgets(line,5,events_file);
-    seperate(0,4,line,time_event);
-    ++*num_line;
+    while(fgets(line,5,events_file)!=NULL && follow)
+    {
+        seperate(0,4,line,time_event);
+        if(strcmp(time,time_event)==0)
+            follow=0;
+    }
     if(strcmp(time,time_event)==0)
     {
         printf("Time_file=%s\n",time_event);
         while(fgets(line,25,events_file)!=NULL && line[4]!=':')
         {
-            printf("%s\n",line);
             events_execution(line,list_company, blacklisted_company,list_planes_used);
         }
     }
@@ -48,7 +51,7 @@ void events_execution(char *event,Companies_list * list_company, Companies_list 
 {
     //First decomposition
     char temp[2],type_event;
-    if(event[7]=='A' || event[7]=='D' || event[7]=='U') //Checking if
+    if((event[7]=='A' || event[7]=='D' || event[7]=='U')&& secure_entry(event)==1) //Checking if
     {
         char id[7],acro_comp[4];
         Companies_list ptr_comp;
@@ -188,5 +191,44 @@ void read_log(int lines_to_read)
         ++i;
     }
     fclose(log_file);
+}
 
+int secure_entry(char * line) //Function to verify that everything the user enters is conform to what we want
+{
+    int secure=1;
+    int i=0;
+    for(i;i<3;i++)//Check that 3 first characters are letters
+    {
+        if(line[i]>90 || line[i]<65)
+            secure=0;
+    }
+    for(i;i<6;i++)//Check that following 3 characters are numbers
+    {
+        if(line[i]>'9')
+            secure=0;
+    }
+    if(line[6]!='-' || line[8]!='-' || line[13]!='-' || line[16]!='-')//Check that the union--sign are at the good place
+        secure=0;
+    if(line[7]=='D')
+    {
+        for(i=9;i<13;i++)
+        {
+            if(line[i]>90 || line[i]<65)
+                secure=0;
+        }
+    }
+    else if(line[7]=='U' || line[7]=='A')
+    {
+        i=14;
+        while(i<19)
+        {
+            if(i!=16)
+            {
+                if(line[i]>'9')
+                    secure=0;
+            }
+            ++i;
+        }
+    }
+    return secure;
 }

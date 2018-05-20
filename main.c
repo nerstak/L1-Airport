@@ -12,6 +12,7 @@ int main()
     char stime[5],event[25];
     // initializing variables
     int time;
+    printf("%d",secure_entry("ALI132-A-    -08-01"));
     lists_present_planes * present_planes;
     init_present_planes(&present_planes);
     Companies_list all_companies, blacklisted_companies;
@@ -39,7 +40,7 @@ int main()
 
             // ALL PLAYER INPUT AND INTERACTIONS HERE
 
-            getch();
+            //getchar();
             sort_all_lists(present_planes,all_companies,blacklisted_companies,time);
         }
 

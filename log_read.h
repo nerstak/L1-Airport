@@ -12,4 +12,6 @@ Companies_list setup_companies();
 
 void read_log(int lines_to_read);
 
+int secure_entry(char * line);
+
 #endif // LOG_READ_H_INCLUDED

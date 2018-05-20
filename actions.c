@@ -52,16 +52,18 @@ void sort_all_lists(lists_present_planes * present_planes,Companies_list all_com
 void extract_blacklisted(Planes_list * blacklist_landings,Planes_list * normal_landings,Companies_list blacklisted_companies)
 {
     Planes_list prev,cur,landings=*normal_landings;
-
     int empty=0;
     while(empty==0)
     {
         if(landings==NULL)
             empty=1;
         else if(search_company(&blacklisted_companies,landings->plane.company->acronym)!=NULL)
+        {
             move_plane_lists(normal_landings,blacklist_landings);
+        }
         else
             empty=1;
+        landings=*normal_landings;
     }
     if(landings!=NULL)
     {
@@ -162,7 +164,9 @@ int Emergency(Planes_list Landing) //sees if a plane has less than 5 mins remain
 void move_plane_lists(Planes_list  *ini,Planes_list  *dest)
 {
     Planes_list  *cur=dest;
-    if((*cur)==NULL)
+    Planes_list lmao;
+    lmao=*ini;
+    if(*dest==NULL)
     {
         (*dest)=*ini;
         (*ini)=(*ini)->next_waiting;

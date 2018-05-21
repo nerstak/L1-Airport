@@ -11,7 +11,7 @@ void generate_action_log(char action,Plane * plane_selected,char *stime,char * e
     }
     else
     {
-        sprintf(event,"%s-%c-%s-%d%d-%d%d",&(plane_selected->id),action,stime,(plane_selected->fuel)/10,(plane_selected->fuel)%10,(plane_selected->comsumption)/10,(plane_selected->comsumption)%10);
+        sprintf(event,"%s-%c------%d%d-%d%d",&(plane_selected->id),action,(plane_selected->fuel)/10,(plane_selected->fuel)%10,(plane_selected->comsumption)/10,(plane_selected->comsumption)%10);
     }
 }
 

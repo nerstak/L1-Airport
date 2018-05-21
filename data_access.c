@@ -80,18 +80,12 @@ Company * search_company(Companies_list * list_company, char * acronym) //Goes t
     {
         Companies_list cursor_company;
         cursor_company=*list_company;
-        int checked=1;
-        while(cursor_company != NULL && checked)
-        {
-            if(strcmp(acronym,cursor_company->company.acronym)==0)
-                checked=0;
-            else
-                cursor_company=cursor_company->next_company;
-        }
-        if(cursor_company!=NULL)
+        while(cursor_company != NULL)
         {
             if(strcmp(acronym,cursor_company->company.acronym)==0)
                 return cursor_company;
+            else
+                cursor_company=cursor_company->next_company;
         }
     }
     return NULL;
@@ -100,18 +94,12 @@ Company * search_company(Companies_list * list_company, char * acronym) //Goes t
 Cell_plane * search_cell_plane(Planes_list planes_company, char * id) //Search a plane in the list of company, using the ID
 {
     Planes_list cursor_plane=planes_company;
-    int checked=1;
-    while(cursor_plane != NULL && checked)
-    {
-        if(strcmp(id,cursor_plane->plane.id)==0)
-            checked=0;
-        else
-            cursor_plane=cursor_plane->next_plane_company;
-    }
-    if(cursor_plane != NULL)
+    while(cursor_plane != NULL)
     {
         if(strcmp(id,cursor_plane->plane.id)==0)
             return cursor_plane;
+        else
+            cursor_plane=cursor_plane->next_plane_company;
     }
     return NULL;
 }

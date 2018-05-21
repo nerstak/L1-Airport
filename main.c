@@ -23,12 +23,12 @@ int main()
     {
         time2string(time,stime);
         events_reading(stime,&all_companies,&blacklisted_companies,present_planes);
-        /*
-        if(strcmp(stime,"1135")==0 && time==695);
+
+        /*if(strcmp(stime, "1135")==0 && time==695)
         {
             printf("CB:%s:\n",blacklisted_companies->company.name);
-        }
-        */
+        }*/
+
 
 
 
@@ -36,13 +36,12 @@ int main()
         sort_all_lists(present_planes,all_companies,blacklisted_companies,time);
         if(time%5==0) //Player input every 5 min
         {
-            printf("\n%d-%s\n",time,stime);
-            //user_interaction(present_planes,&all_companies,&blacklisted_companies,time);
+            //printf("\n%d-%s\n",time,stime);
+            user_interaction(present_planes,&all_companies,&blacklisted_companies,time);
             //printf("CB:%s\n\n",blacklisted_companies->company.name);
 
             // ALL PLAYER INPUT AND INTERACTIONS HERE
 
-            //getch();
             sort_all_lists(present_planes,all_companies,blacklisted_companies,time);
         }
 

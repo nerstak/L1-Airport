@@ -4,7 +4,7 @@
 
 void seperate(int beginning, int ending, char * words, char * result);
 
-char * events_reading(char *time, Companies_list * list_company, Companies_list * blacklisted_company, lists_present_planes *list_planes_used,char * stime);
+char * events_reading(char *time, Companies_list * list_company, Companies_list * blacklisted_company, lists_present_planes *list_planes_used);
 
 void events_execution(char *event, Companies_list * list_company, Companies_list * blacklisted_company, lists_present_planes *list_planes_used, char * stime);
 

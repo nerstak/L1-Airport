@@ -22,16 +22,17 @@ void create_log()
     fclose(log_file);
 }
 
-void write_action(char * event)
+void write_action(char * event,char * stime)
 {
     FILE * log_file = NULL; //Opening the log file
-    char tmp[1];
+    char tmp[1],history[28];
+    sprintf(history,"%c%c:%c%c - %s",stime[0],stime[1],stime[2],stime[3],event);
     log_file = fopen("report.log","a");
     if (log_file==NULL)
     {
         return NULL;
     }
-    fputs(event,log_file);
+    fputs(history,log_file);
     fputs("\n",log_file);
     fclose(log_file);
 }

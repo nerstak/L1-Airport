@@ -17,7 +17,7 @@ void seperate(int beginning, int ending, char * words, char * result) //Takes a 
     }
 }
 
-char * events_reading(char *time, Companies_list * list_company, Companies_list * blacklisted_company, lists_present_planes *list_planes_used,char * stime) //reads a line and sees if it is time to run that script, if so it runs that script
+char * events_reading(char *time, Companies_list * list_company, Companies_list * blacklisted_company, lists_present_planes *list_planes_used) //reads a line and sees if it is time to run that script, if so it runs that script
 {
     FILE * events_file = NULL; //Opening the file events.log
     char line[100],time_event[5],temp[2];
@@ -38,7 +38,7 @@ char * events_reading(char *time, Companies_list * list_company, Companies_list 
         //printf("Time_file=%s\n",time_event);
         while(fgets(line,25,events_file)!=NULL && line[4]!=':')
         {
-            events_execution(line,list_company, blacklisted_company,list_planes_used,stime);
+            events_execution(line,list_company, blacklisted_company,list_planes_used,time);
         }
     }
     fclose(events_file);
@@ -171,6 +171,8 @@ void read_log(int lines_to_read)
     FILE * log_file = NULL; //Opening the file events.log
     char line[100]={0,};
     int i=0;
+    if(lines_to_read==0)
+        lines_to_read=1440;
     log_file = fopen("report.log","r");
     if (log_file==NULL)
     {
@@ -211,10 +213,8 @@ int secure_entry(char * line, char * stime) //Function to verify that everything
                 secure=0;
         }
         seperate(9,14,line,time_event);
-        if(time2int(time_event)<stime)
-        {
+        if((time2int(time_event)+5)<time2int(stime))
             secure=0;
-        }
 
     }
     else if(line[7]=='U' || line[7]=='A')

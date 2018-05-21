@@ -279,3 +279,75 @@ void use_fuel(Planes_list * planesL)
     }
 }
 
+
+void user_interaction(lists_present_planes * present_planes, Companies_list * all_companies,Companies_list * blacklisted_companies, int time)
+{
+    int select=0;
+    while(select!=32)
+    {
+        system("cls");
+        printf("\n       What would you like to do?\n\n  1. Add airplane to takeoff\n  2. Add airplane to landing\n  3. Remove an airplane at launch\n  4. Declare a landing airplane as emergency\n  5. Put a company on the blacklist\n  6. Display all companies and their aircrafts\n  7. Display status of a company's planes\n  8. Display airplanes awaiting takeoff\n  9. Display airplanes waiting to land\n  0. Display history\n\n Press Spacebar to quit menu and continue simulation...");
+        select=getch();
+        system("cls");
+        switch(select)
+        {
+        case(48):
+            read_log(0);
+            break;
+        case(49):
+
+            break;
+        case(50):
+
+            break;
+        case(51):
+
+            break;
+        case(52):
+
+            break;
+        case(53):
+
+            break;
+        case(54):
+            print_companies(*all_companies);
+            break;
+        case(55):
+
+            break;
+        case(56):
+
+            break;
+        case(57):
+
+            break;
+        }
+        if(select!=32)
+        {
+            printf("\n\n   Press any key to go back to interaction menu...");
+            getch();
+        }
+    }
+}
+
+
+void print_companies(Companies_list companies)
+{
+    Cell_company * cur=companies;
+    Cell_plane * curplane;
+    while(cur!=NULL)
+    {
+        printf("\n\n Company: %s\n  Acronym %s\n",cur->company.name,cur->company.acronym);
+        curplane=cur->company.planes_company;
+        while(curplane!=NULL)
+        {
+            printf("\n    Plane ID:%s",curplane->plane.id);
+            curplane=curplane->next_plane_company;
+        }
+        cur=cur->next_company;
+    }
+}
+
+
+
+

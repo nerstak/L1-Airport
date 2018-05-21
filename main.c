@@ -22,17 +22,22 @@ int main()
     for(time=0;time<=1440;time++)
     {
         time2string(time,stime);
-        events_reading(stime,&all_companies,&blacklisted_companies,present_planes,stime);
+        events_reading(stime,&all_companies,&blacklisted_companies,present_planes);
         /*
         if(strcmp(stime,"1135")==0 && time==695);
         {
             printf("CB:%s:\n",blacklisted_companies->company.name);
         }
         */
+
+
+
+
         sort_all_lists(present_planes,all_companies,blacklisted_companies,time);
         if(time%5==0) //Player input every 5 min
         {
             printf("\n%d-%s\n",time,stime);
+            //user_interaction(present_planes,&all_companies,&blacklisted_companies,time);
             //printf("CB:%s\n\n",blacklisted_companies->company.name);
 
             // ALL PLAYER INPUT AND INTERACTIONS HERE
@@ -53,7 +58,7 @@ int main()
                 generate_action_log('U',&(present_planes->emergency->plane),stime,event);
 
             printf("EVENT:        %s\n",event);
-            write_action(event);
+            write_action(event,stime);
             present_planes->emergency=present_planes->emergency->next_waiting;
         }
         else if(Takingoff(present_planes->takeoff,time,blacklisted_companies))//Take offs
@@ -61,7 +66,7 @@ int main()
             // REGISTER EVENT
             generate_action_log('D',&(present_planes->takeoff->first->plane),stime,event);
             printf("EVENT:        %s\n",event);
-            write_action(event);
+            write_action(event,stime);
 
             present_planes->takeoff->first=present_planes->takeoff->first->next_waiting;
         }
@@ -70,7 +75,7 @@ int main()
             // REGISTER EVENT
             generate_action_log('N',&(present_planes->blacklist->plane),stime,event);
             printf("EVENT:        %s\n",event);
-            write_action(event);
+            write_action(event,stime);
 
             present_planes->blacklist=present_planes->blacklist->next_waiting;
         }
@@ -80,7 +85,7 @@ int main()
             // REGISTER EVENT
             generate_action_log('A',&(present_planes->landing->plane),stime,event);
             printf("EVENT:        %s\n",event);
-            write_action(event);
+            write_action(event,stime);
 
             present_planes->landing=present_planes->landing->next_waiting;
         }
@@ -89,7 +94,7 @@ int main()
         all_fuel_Use(present_planes);
 
     }
-    read_log(5);
+    read_log(0);
     /*
 
     //Actually to test the viability of functions

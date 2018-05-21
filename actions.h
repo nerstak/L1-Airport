@@ -17,5 +17,7 @@ void move2queue(Planes_list * wait,Takeoff_list * immediate,int time,Companies_l
 void all_fuel_Use(lists_present_planes * present_planes);
 void use_fuel(Planes_list * planesL);
 
+void user_interaction(lists_present_planes * present_planes, Companies_list * all_companies,Companies_list * blacklisted_companies, int time);
+void print_companies(Companies_list companies);
 
 #endif // ACTIONS_H_INCLUDED

@@ -57,12 +57,6 @@ typedef struct list_present_planes{
     Planes_list landing;
 } lists_present_planes;
 
-
-void initTakeoff(Takeoff_list* Que);
-void pushTakeoff(Takeoff_list* Que, Cell_plane *nElt);
-Cell_plane* popTakeoff(Takeoff_list* Que);
-void displayTakeoff(Takeoff_list *Que);
-
 Company * new_company(char *name,char *acronym); //Create a new company
 void new_cell_company(Companies_list * list_company,char *name,char *acronym); //Create the new cell of a company
 Plane * new_plane(char *id, int comsumption, int fuel, char *takeoff_time, Company *ptr_comp);

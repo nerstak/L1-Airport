@@ -3,11 +3,12 @@
 #include <string.h>
 #include "data_access.h"
 #include "user.h"
+#include "log_read.h"
 
 void user_interaction(lists_present_planes * present_planes, Companies_list * all_companies,Companies_list * blacklisted_companies, int time)//Menu of interaction for the user
 {
-    int select=0;
-    char input[10];
+    int select=0,fuel,consumption;
+    char input[10], name[6],event[19],n_time[4];
     while(select!=32)
     {
         system("cls");
@@ -23,10 +24,24 @@ void user_interaction(lists_present_planes * present_planes, Companies_list * al
             read_log(0);
             break;
         case(49): //Add an airplane to takeoff
-
+            print_companies(*all_companies);
+            printf("Name of the plane? (Acronym of company + 3 numbers) ");
+            scanf("%s",name);
+            printf("At what time do you want to launch it (HHMM)? ");
+            scanf("%s",n_time);
+            sprintf(event,"%s-D-%s------",name,n_time);
+            events_execution(event,all_companies, blacklisted_companies,present_planes,n_time);
             break;
         case(50): //Add an airplane to landing
-
+            print_companies(*all_companies);
+            printf("Name of the plane? (Acronym of company + 3 numbers) ");
+            scanf("%s",name);
+            printf("Consumption of the plane? ");
+            scanf("%d",&consumption);
+            printf("Fuel of the plane? ");
+            scanf("%d",&fuel);
+            sprintf(event,"%s-A------%d%d-%d%d",name,fuel/10,fuel%10,consumption/10,consumption%10);
+            events_execution(event,all_companies, blacklisted_companies,present_planes,n_time);
             break;
         case(51): //Remove an airplane at launch
 

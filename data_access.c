@@ -116,7 +116,7 @@ int presence_in_lists(Planes_list list_planes, char * id) //If a plane is in a l
 }
 
 
-void init_present_planes(lists_present_planes ** present_planes)
+void init_present_planes(lists_present_planes ** present_planes)//Init the 5 mains lists used
 {
     *present_planes=malloc(sizeof(lists_present_planes));
     (*present_planes)->blacklist=NULL;
@@ -127,21 +127,3 @@ void init_present_planes(lists_present_planes ** present_planes)
     (*present_planes)->takeoff->first=NULL;
     (*present_planes)->takeoff->last=NULL;
 }
-
-
-void initTakeoff(Takeoff_list* Que)
-{
-    Que->first=NULL;
-    Que->last=NULL;
-}
-
-
-/*void displayTakeoff(Takeoff_list *Que)
-{
-    Cell_plane * cur=Que->first;
-    while(cur!=NULL)
-    {
-        printf("%s - %s\n",cur->plane->takeoff_time,cur->plane->id);
-        cur=cur->next_waiting;
-    }
-}*/

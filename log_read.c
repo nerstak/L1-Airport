@@ -44,7 +44,7 @@ char * events_reading(char *time, Companies_list * list_company, Companies_list 
     fclose(events_file);
 }
 
-void events_execution(char *event,Companies_list * list_company, Companies_list * blacklisted_company,  lists_present_planes *list_planes_used, char *stime)
+void events_execution(char *event,Companies_list * list_company, Companies_list * blacklisted_company,  lists_present_planes *list_planes_used, char *stime) //Execute event, either add planes, either blacklist companies
 {
     //First decomposition
     char temp[2],type_event;
@@ -116,7 +116,7 @@ void events_execution(char *event,Companies_list * list_company, Companies_list 
     }
 }
 
-Companies_list setup_companies()
+Companies_list setup_companies()//Setup all companies and their acronym
 {
     Companies_list * list_company=malloc(sizeof(Companies_list));
     *list_company=NULL;
@@ -166,12 +166,12 @@ void add_to_list(Planes_list * list,Cell_plane *newCellPlane)
         cursor->next_waiting=newCellPlane;
 }
 
-void read_log(int lines_to_read)
+void read_log(int lines_to_read) //Function to display the history
 {
     FILE * log_file = NULL; //Opening the file events.log
     char line[100]={0,};
     int i=0;
-    if(lines_to_read==0)
+    if(lines_to_read==0) //To display all history
         lines_to_read=1440;
     log_file = fopen("report.log","r");
     if (log_file==NULL)

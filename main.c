@@ -18,7 +18,9 @@ int main()
     Companies_list all_companies, blacklisted_companies;
     all_companies=setup_companies();
     blacklisted_companies=NULL;
+
     create_log();
+
     for(time=0;time<=1440;time++) //Big main loop
     {
         time2string(time,stime);
@@ -29,7 +31,6 @@ int main()
             user_interaction(present_planes,&all_companies,&blacklisted_companies,time);
             sort_all_lists(present_planes,all_companies,blacklisted_companies,time);//After adding new events, we sort
         }
-
         //EVENTS
         if(present_planes->emergency!=NULL)//Emergency landing
         {
@@ -49,6 +50,8 @@ int main()
             write_action(event,stime);
             // EXECUTION EVENT
             present_planes->takeoff->first=present_planes->takeoff->first->next_waiting;
+            if(present_planes->takeoff->first==NULL)
+                present_planes->takeoff->last=NULL;
         }
         else if(present_planes->blacklist!=NULL)//Blacklisted landings
         {

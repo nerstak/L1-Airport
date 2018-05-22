@@ -3,7 +3,7 @@
 	<stdio.h>
 	<stdlib.h>
 
-1526945884 source:c:\users\theo\documents\github\airport_l1p4\main.c
+1527029493 source:c:\users\theo\documents\github\airport_l1p4\main.c
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
@@ -11,26 +11,27 @@
 	"data_access.h"
 	"log_read.h"
 	"log_write.h"
+	"user.h"
 
-1526834594 c:\users\theo\documents\github\airport_l1p4\data_access.h
+1527020039 c:\users\theo\documents\github\airport_l1p4\data_access.h
 	<string.h>
 
-1526945787 source:c:\users\theo\documents\github\airport_l1p4\data_access.c
+1527020039 source:c:\users\theo\documents\github\airport_l1p4\data_access.c
 	<stdio.h>
 	<stdlib.h>
 	"data_access.h"
 
-1526948147 source:c:\users\theo\documents\github\airport_l1p4\actions.c
+1527031254 source:c:\users\theo\documents\github\airport_l1p4\actions.c
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
 	"data_access.h"
 	"actions.h"
 
-1526948112 c:\users\theo\documents\github\airport_l1p4\actions.h
+1527024935 c:\users\theo\documents\github\airport_l1p4\actions.h
 	"data_access.h"
 
-1526915042 source:c:\users\theo\documents\github\airport_l1p4\log_read.c
+1527020158 source:c:\users\theo\documents\github\airport_l1p4\log_read.c
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
@@ -44,9 +45,19 @@
 1526914380 c:\users\theo\documents\github\airport_l1p4\log_write.h
 	"data_access.h"
 
-1526948315 source:c:\users\theo\documents\github\airport_l1p4\log_write.c
+1527021987 source:c:\users\theo\documents\github\airport_l1p4\log_write.c
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
 	"log_write.h"
+
+1527020727 c:\users\theo\documents\github\airport_l1p4\user.h
+
+1527024001 source:c:\users\theo\documents\github\airport_l1p4\user.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"data_access.h"
+	"user.h"
+	"log_read.h"
 

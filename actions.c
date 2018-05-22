@@ -90,13 +90,12 @@ void sortwaitinglist(Planes_list * Planes) //Sorts the landing and take off wait
 {
     if(*Planes!=NULL)
     {
-        Planes_list PlaneL=*Planes;
         int unsorted=1;
         Cell_plane *cur,*prev,*follow;
         while(unsorted)
         {
             unsorted=0;
-            prev=PlaneL;
+            prev=(*Planes);
             cur=prev->next_waiting;
             if(cur!=NULL)
                 follow=cur->next_waiting;
@@ -108,8 +107,8 @@ void sortwaitinglist(Planes_list * Planes) //Sorts the landing and take off wait
                 {
                     prev->next_waiting=follow;
                     cur->next_waiting=prev;
-                    PlaneL=cur;
-                    prev=PlaneL;
+                    (*Planes)=cur;
+                    prev=(*Planes);
                     cur=prev->next_waiting;
                     unsorted=1;
                 }
@@ -145,6 +144,8 @@ int PlanePriority(Plane * plane) //Used in sorting function to determine priorit
 
 int Fueltime(Plane * plane) //calculates number of minutes remaining in the air
 {
+    if(plane->fuel==0)
+        return 0;
     return (plane->fuel)/(plane->comsumption);
 }
 
@@ -163,24 +164,23 @@ int Emergency(Planes_list Landing) //sees if a plane has less than 5 mins remain
 
 void move_plane_lists(Planes_list  *ini,Planes_list  *dest)//Changes a plane of list
 {
-    Planes_list  *cur=dest;
-    Planes_list lmao;
-    lmao=*ini;
+    Cell_plane * cur=*dest;
+    Cell_plane * pla=*ini;
     if(*dest==NULL)
     {
-        (*dest)=*ini;
+        (*dest)=pla;
         (*ini)=(*ini)->next_waiting;
         (*dest)->next_waiting=NULL;
     }
     else
     {
-        while((*cur)->next_waiting!=NULL)
+        while(cur->next_waiting!=NULL)
         {
-            (*cur)=(*cur)->next_waiting;
+            cur=cur->next_waiting;
         }
-        (*cur)->next_waiting=(*ini);
+        cur->next_waiting=pla;
         (*ini)=(*ini)->next_waiting;
-        (*cur)->next_waiting->next_waiting=NULL;
+        cur->next_waiting->next_waiting=NULL;
     }
 }
 
@@ -195,6 +195,8 @@ int Takingoff(Takeoff_list * Takeoff,int time,Companies_list blacklisted_compani
                 blacklistcheck=1;
             else if(search_company(&blacklisted_companies,Takeoff->first->plane.company->acronym)!=NULL)
                 Takeoff->first=Takeoff->first->next_waiting;
+                if(Takeoff->first==NULL)
+                    Takeoff->last=NULL;
             else
                 blacklistcheck=1;
         }
@@ -214,7 +216,7 @@ void move2queue(Planes_list * waiting,Takeoff_list * immediate,int time,Companie
 {
     if(*waiting!=NULL)
     {
-        Planes_list wait=*waiting;
+        char acro[4];
         int numscheduled=0;
         Planes_list count=immediate->first;
         if(count!=NULL)
@@ -226,26 +228,27 @@ void move2queue(Planes_list * waiting,Takeoff_list * immediate,int time,Companie
                 count=count->next_waiting;
             }
         }
-        while(numscheduled<5 && wait!=NULL)
+        while(numscheduled<5 && (*waiting)!=NULL)
         {
-            if(time2int(wait->plane.takeoff_time)<time+5)
+            if(time2int((*waiting)->plane.takeoff_time)<time+5)
             {
-                if(search_company(blacklisted_companies,wait->plane.company->acronym)!=NULL) //if blacklisted, ignore
+                sprintf(acro,"%c%c%c",(*waiting)->plane.id[0],(*waiting)->plane.id[1],(*waiting)->plane.id[2]);
+
+                if(search_company(blacklisted_companies,acro)) //if blacklisted, ignore
                 {
-                    wait=wait->next_waiting;
+                    (*waiting)=(*waiting)->next_waiting;
                 }
                 else
                 {
                     if(immediate->last==NULL)
                     {
-                        immediate->last=wait;
-                        immediate->first=wait;
+                        immediate->last=(*waiting);
+                        immediate->first=(*waiting);
                     }
-
                     else
-                        immediate->last->next_waiting=wait;
-                    immediate->last=wait;
-                    wait=wait->next_waiting;
+                        immediate->last->next_waiting=(*waiting);
+                    immediate->last=(*waiting);
+                    (*waiting)=(*waiting)->next_waiting;
                     immediate->last->next_waiting=NULL;
                     numscheduled++;
                 }
@@ -275,6 +278,8 @@ void use_fuel(Planes_list * planesL)
     while(cur!=NULL)
     {
         cur->plane.fuel-=cur->plane.comsumption;
+        if(cur->plane.fuel<0)
+            cur->plane.fuel=0;
         cur=cur->next_waiting;
     }
 }

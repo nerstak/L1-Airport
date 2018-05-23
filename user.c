@@ -19,6 +19,9 @@ void user_interaction(lists_present_planes * present_planes, Companies_list * al
         printf("Time - %c%c:%c%c",stime[0],stime[1],stime[2],stime[3]);
         printf("\n\n       What would you like to do?\n\n  1. Add airplane to takeoff\n  2. Add airplane to landing\n  3. Remove an airplane at launch\n  4. Declare a landing airplane as emergency\n  5. Put a company on the blacklist\n  6. Display all companies and their aircrafts\n  7. Display status of a company's planes\n  8. Display airplanes awaiting takeoff\n  9. Display airplanes waiting to land\n  0. Display history\n\n Press Spacebar to quit menu and continue simulation...");
         //printf("\n takeoff:%s boarding:%s",present_planes->takeoff->first->plane.id,present_planes->boarding->plane.id);
+        int yeha=rand()%5;
+        if(yeha)
+            printf("Yeha %d",yeha);
         select=getch();
         system("cls");
         switch(select)
@@ -79,7 +82,6 @@ void user_interaction(lists_present_planes * present_planes, Companies_list * al
                     printf("\n       No plane found\n");
                 else
                 {
-                    //printf("\nHeyyo %s    %s\n",plane_cell->)
                     move_plane_lists(&plane_cell,&(present_planes->emergency));
                 }
             }
@@ -278,12 +280,13 @@ Cell_plane * pop_plane(Planes_list * Plane_cell,char * ID)
 
 void random_gen(lists_present_planes * present_planes, Companies_list * all_companies,Companies_list * blacklisted_companies, int time)
 {
-    if(rand()%3)
+    if(rand()%12==0)
     {
         char name[4],stime[5],event[20],curtime[5];
         time2string(time,curtime);
         int ID;
         Companies_list randc;
+        Cell_plane * plane_cell;
         switch(rand()%3)
         {
         case 0:
@@ -292,7 +295,7 @@ void random_gen(lists_present_planes * present_planes, Companies_list * all_comp
             if(randc!=NULL)
             {
                 ID=rand()%1000;
-                time2string(time+6+(rand()%(1440-time)),stime);
+                time2string(time+6+(rand()%120),stime);
                 sprintf(event,"%s%d%d%d-D-%s------",randc->company.acronym,ID/100,(ID%100)/10,ID%10,stime);
                 events_execution(event,all_companies, blacklisted_companies,present_planes,curtime);
             }
@@ -309,28 +312,65 @@ void random_gen(lists_present_planes * present_planes, Companies_list * all_comp
                 events_execution(event,all_companies, blacklisted_companies,present_planes,curtime);
             }
             break;
-        /*case 2:
+        case 2:
             // remove launch or decide landing in an emergency or blacklist
-            if(rand()%4)
+            if(rand()%7==0)
             {
                 switch(rand()%3)
                 {
                 case 0:
-                    plane_cell=pop_plane(&(present_planes->boarding),name);
+                    plane_cell=randplane(present_planes->boarding);
+                    if(plane_cell!=NULL)
+                        pop_plane(&(present_planes->boarding),plane_cell->plane.id);
                     // remove launch
                     break;
                 case 1:
-                    plane_cell=pop_plane(&(present_planes->boarding),name);
+                    plane_cell=randplane(present_planes->landing);
+                    if(plane_cell!=NULL)
+                    {
+                        pop_plane(&(present_planes->landing),plane_cell->plane.id);
+                        move_plane_lists(&plane_cell,&(present_planes->emergency));
+                    }
                     // emergency land
                     break;
                 case 2:
+                    randc=randcomp(*all_companies);
+                    if(randc!=NULL)
+                        blacklist_company(randc->company.acronym,all_companies,blacklisted_companies);
                     // blacklist
                     break;
                 }
-            break;*/
+            }
+            break;
         }
     }
 }
+
+
+
+Planes_list randplane(Planes_list Planes)
+{
+    int n=0,i;
+    if(Planes!=NULL)
+    {
+        Planes_list cur=Planes;
+        while(cur!=NULL)
+        {
+            cur=cur->next_waiting;
+            n++;
+        }
+        cur=Planes;
+
+        n=rand()%n;
+        for(i=0;i<n;i++)
+        {
+            cur=cur->next_waiting;
+        }
+        return cur;
+    }
+    return NULL;
+}
+
 
 Companies_list randcomp(Companies_list all_companies)
 {
@@ -355,10 +395,6 @@ Companies_list randcomp(Companies_list all_companies)
 
     }
 }
-
-
-
-
 
 
 

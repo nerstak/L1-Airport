@@ -231,7 +231,7 @@ int secure_entry(char * line, char * stime) //Function to verify that everything
                 secure=0;
         }
         seperate(9,14,line,time_event);
-        if((time2int(time_event)+5)<time2int(stime))
+        if( time2int(time_event) < (time2int(stime)+5) || time2int(time_event)>1440 )
             secure=0;
 
     }

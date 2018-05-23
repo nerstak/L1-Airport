@@ -8,7 +8,8 @@
 void user_interaction(lists_present_planes * present_planes, Companies_list * all_companies,Companies_list * blacklisted_companies, int time)//Menu of interaction for the user
 {
     int select=0,fuel,consumption;
-    char input[10], name[6],event[19],n_time[4];
+    char input[4], name[7],event[19],n_time[5];
+    Cell_plane * plane_cell;
     while(select!=32)
     {
         system("cls");
@@ -16,7 +17,7 @@ void user_interaction(lists_present_planes * present_planes, Companies_list * al
         time2string(time,stime);
         printf("Time - %c%c:%c%c",stime[0],stime[1],stime[2],stime[3]);
         printf("\n\n       What would you like to do?\n\n  1. Add airplane to takeoff\n  2. Add airplane to landing\n  3. Remove an airplane at launch\n  4. Declare a landing airplane as emergency\n  5. Put a company on the blacklist\n  6. Display all companies and their aircrafts\n  7. Display status of a company's planes\n  8. Display airplanes awaiting takeoff\n  9. Display airplanes waiting to land\n  0. Display history\n\n Press Spacebar to quit menu and continue simulation...");
-        printf("\n takeoff:%s boarding:%s",present_planes->takeoff->first->plane.id,present_planes->boarding->plane.id);
+        //printf("\n takeoff:%s boarding:%s",present_planes->takeoff->first->plane.id,present_planes->boarding->plane.id);
         select=getch();
         system("cls");
         switch(select)
@@ -24,6 +25,7 @@ void user_interaction(lists_present_planes * present_planes, Companies_list * al
         case(48): //Print the history
             read_log(0);
             break;
+
         case(49): //Add an airplane to takeoff
             print_unused(*all_companies,present_planes);
             printf("\nName of the plane? (Acronym of company + 3 numbers) ");
@@ -33,6 +35,7 @@ void user_interaction(lists_present_planes * present_planes, Companies_list * al
             sprintf(event,"%s-D-%s------",name,n_time);
             events_execution(event,all_companies, blacklisted_companies,present_planes,n_time);
             break;
+
         case(50): //Add an airplane to landing
             print_unused(*all_companies,present_planes);
             printf("\nName of the plane? (Acronym of company + 3 numbers) ");
@@ -44,19 +47,73 @@ void user_interaction(lists_present_planes * present_planes, Companies_list * al
             sprintf(event,"%s-A------%d%d-%d%d",name,fuel/10,fuel%10,consumption/10,consumption%10);
             events_execution(event,all_companies, blacklisted_companies,present_planes,n_time);
             break;
+
         case(51): //Remove an airplane at launch
-
+            if(present_planes->boarding!=NULL)
+            {
+                printf("\n       Planes awaiting takeoff:\n");
+                print_planes(present_planes->boarding,0);
+                 printf("\n ID of the plane?: ");
+                scanf("%s",name);
+                plane_cell=pop_plane(&(present_planes->boarding),name);
+                if(plane_cell==NULL)
+                    printf("\n       No plane found\n");
+            }
+            else
+                printf("\n       No planes are awaiting takeoff\n");
             break;
+
         case(52): //Declare an airplane as emergency
+            if(present_planes->landing!=NULL || present_planes->blacklist!=NULL)
+            {
+                printf("\n       Select a plane to move to emergency:\n");
+                print_planes(present_planes->landing,1);
+                print_planes(present_planes->blacklist,1);
+                printf("\n ID of the plane?: ");
+                scanf("%s",name);
+                plane_cell=pop_plane(&(present_planes->landing),name);
+                if(plane_cell==NULL)
+                    plane_cell=pop_plane(&(present_planes->blacklist),name);
+                if(plane_cell==NULL)
+                    printf("\n       No plane found\n");
+                else
+                {
+                    //printf("\nHeyyo %s    %s\n",plane_cell->)
+                    move_plane_lists(&plane_cell,&(present_planes->emergency));
+                }
+            }
+            else
+            {
+                printf("\n       No planes are waiting to land:\n");
+            }
+
+
 
             break;
-        case(53):
 
-            break;
-        case(54):
+        case(53): //Put a company on the blacklist
             print_companies(*all_companies);
+            printf("\n\n   What company would you like to Blacklist(enter acronym: ");
+            scanf("%s",input);
+            blacklist_company(input,all_companies,blacklisted_companies);
             break;
-        case(55):
+
+        case(54): //Display all companies and their aircrafts
+            print_companies(*all_companies);
+            if(*blacklisted_companies!=NULL)
+            {
+                Cell_company * cur=*blacklisted_companies;
+                printf("\n\n    The Following companies are blacklisted:");
+                while(cur!=NULL)
+                {
+                    printf("\n - %s",cur->company.name);
+
+                    cur=cur->next_company;
+                }
+            }
+            break;
+
+        case(55): //Display status of a company's aircrafts
             print_companies(*all_companies);
             printf("\n\n   What company would you like to see the planes of? (enter acronym)\n");
             scanf("%s",input);
@@ -65,6 +122,7 @@ void user_interaction(lists_present_planes * present_planes, Companies_list * al
             else
                 planes_status(search_company(all_companies,input),0,present_planes);
             break;
+
         case(56):
             if(present_planes->boarding!=NULL || present_planes->takeoff->first!=NULL)
             {
@@ -75,6 +133,7 @@ void user_interaction(lists_present_planes * present_planes, Companies_list * al
             else
                 printf("\n       No planes are awaiting takeoff\n");
             break;
+
         case(57):
             if(present_planes->emergency!=NULL)
             {
@@ -94,6 +153,7 @@ void user_interaction(lists_present_planes * present_planes, Companies_list * al
             if(present_planes->landing==NULL && present_planes->blacklist==NULL && present_planes->emergency==NULL)
                 printf("\n       No planes are currently waiting to land");
             break;
+
         }
         if(select!=32)
         {
@@ -108,10 +168,10 @@ void print_planes(Planes_list cur,int landing) //Print data of a plane
     while(cur!=NULL)
     {
         printf("\n  Plane ID: %s\n",cur->plane.id);
-        if(landing=1)
+        if(landing)
             printf("    Fuel: %d\n    Consumption: %d\n",cur->plane.fuel,cur->plane.comsumption);
         else
-            printf("    Scheduled Takeoff: %s",cur->plane.takeoff_time[0],cur->plane.takeoff_time[1],cur->plane.takeoff_time[2],cur->plane.takeoff_time[3]);
+            printf("    Scheduled Takeoff: %c%c:%c%c",cur->plane.takeoff_time[0],cur->plane.takeoff_time[1],cur->plane.takeoff_time[2],cur->plane.takeoff_time[3]);
         cur=cur->next_waiting;
     }
 }
@@ -142,6 +202,8 @@ void planes_status(Company * Company,int unused,lists_present_planes * present_p
         printf("\n    This company has no active plane");
     else
     {
+        if(unused==1)
+            printf("\n  %s -=- Acronym: %s",Company->name,Company->acronym);
         while(curplane!=NULL)
         {
             if(unused==0)
@@ -150,7 +212,7 @@ void planes_status(Company * Company,int unused,lists_present_planes * present_p
                 printf(" - Waiting to take off\n       Scheduled time:%c%c:%c%c",curplane->plane.takeoff_time[0],curplane->plane.takeoff_time[1],curplane->plane.takeoff_time[2],curplane->plane.takeoff_time[3]);
             else if((search_planes_list(&(curplane->plane),present_planes->landing) || search_planes_list(&(curplane->plane),present_planes->emergency) || search_planes_list(&(curplane->plane),present_planes->blacklist)) && unused==0)
                 printf(" - Waiting to land\n       Fuel: %d\n       Consumption: %d",curplane->plane.fuel,curplane->plane.comsumption);
-            else if(search_planes_list(&(curplane->plane),present_planes->boarding)==0 || search_planes_list(&(curplane->plane),present_planes->takeoff->first)==0 ||search_planes_list(&(curplane->plane),present_planes->landing)==0 || search_planes_list(&(curplane->plane),present_planes->emergency)==0 || search_planes_list(&(curplane->plane),present_planes->blacklist)==0 )
+            else if(search_planes_list(&(curplane->plane),present_planes->boarding)==0 && search_planes_list(&(curplane->plane),present_planes->takeoff->first)==0 && search_planes_list(&(curplane->plane),present_planes->landing)==0 && search_planes_list(&(curplane->plane),present_planes->emergency)==0 && search_planes_list(&(curplane->plane),present_planes->blacklist)==0 )
             {
                 if(unused)
                     printf("\n    Plane ID:%s",curplane->plane.id);
@@ -183,3 +245,36 @@ void print_unused(Companies_list cur,lists_present_planes * present_planes)
         cur=cur->next_company;
     }
 }
+
+
+Cell_plane * pop_plane(Planes_list * Plane_cell,char * ID)
+{
+    Cell_plane * prev=*Plane_cell,*cur;
+    if(prev!=NULL)
+    {
+        if(strcmp(ID,prev->plane.id)==0)
+        {
+            (*Plane_cell)=(*Plane_cell)->next_waiting;
+            prev->next_waiting=NULL;
+            return prev;
+        }
+        cur=prev->next_waiting;
+        while(cur!=NULL)
+        {
+            if(strcmp(ID,cur->plane.id)==0)
+            {
+                prev->next_waiting=cur->next_waiting;
+                cur->next_waiting=NULL;
+                return cur;
+            }
+            cur=cur->next_waiting;
+            prev=prev->next_waiting;
+        }
+    }
+    return NULL;
+}
+
+
+
+
+

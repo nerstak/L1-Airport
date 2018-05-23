@@ -104,17 +104,23 @@ void events_execution(char *event,Companies_list * list_company, Companies_list 
     if(strcmp("BLACKLIST",keyword)==0) ///BLACKLIST
     {
         char acro_comp[4];
-        Companies_list ptr_comp;
         seperate(10,13,event,acro_comp);
-        //printf("%s!",acro_comp);
-        ptr_comp=search_company(list_company,acro_comp);
-        if(ptr_comp!=NULL)
-        {
-            new_cell_company(blacklisted_company,ptr_comp->company.name,ptr_comp->company.acronym);
-        }
+        blacklist_company(acro_comp,list_company,blacklisted_company);
         //Add to the dictionnary of blacklisted companies.
     }
 }
+
+void blacklist_company(char * acro,Companies_list * all_companies, Companies_list * blacklisted)
+{
+    Companies_list ptr_comp;
+    ptr_comp=search_company(all_companies,acro);
+    if(ptr_comp!=NULL)
+    {
+        new_cell_company(blacklisted,ptr_comp->company.name,ptr_comp->company.acronym);
+    }
+}
+
+
 
 Companies_list setup_companies()//Setup all companies and their acronym
 {

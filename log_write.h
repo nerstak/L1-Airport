@@ -6,6 +6,6 @@ void generate_action_log(char action,Plane * plane_selected,char *stime,char * e
 
 void create_log();
 
-void write_action(char * event,char * stime);
+void write_action(char * event,char * stime,int runway);
 
 #endif // LOG_WRITE_H_INCLUDED

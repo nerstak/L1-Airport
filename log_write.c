@@ -22,11 +22,11 @@ void create_log()
     fclose(log_file);
 }
 
-void write_action(char * event,char * stime)
+void write_action(char * event,char * stime,int runway)
 {
     FILE * log_file = NULL; //Opening the log file
-    char tmp[1],history[28];
-    sprintf(history,"%c%c:%c%c - %s",stime[0],stime[1],stime[2],stime[3],event);
+    char tmp[1],history[30];
+    sprintf(history,"%d_%c%c:%c%c - %s",runway+1,stime[0],stime[1],stime[2],stime[3],event);
     log_file = fopen("report.log","a");
     if (log_file==NULL)
     {

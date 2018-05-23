@@ -98,7 +98,8 @@ void user_interaction(lists_present_planes * present_planes, Companies_list * al
             print_companies(*all_companies);
             printf("\n\n   What company would you like to Blacklist(enter acronym: ");
             scanf("%s",input);
-            blacklist_company(input,all_companies,blacklisted_companies);
+            if(search_company(blacklisted_companies,input)==NULL)
+                blacklist_company(input,all_companies,blacklisted_companies);
             break;
 
         case(54): //Display all companies and their aircrafts
@@ -314,7 +315,7 @@ void random_gen(lists_present_planes * present_planes, Companies_list * all_comp
             break;
         case 2:
             // remove launch or decide landing in an emergency or blacklist
-            if(rand()%7==0)
+            if(rand()%5==0)
             {
                 switch(rand()%3)
                 {
@@ -336,7 +337,10 @@ void random_gen(lists_present_planes * present_planes, Companies_list * all_comp
                 case 2:
                     randc=randcomp(*all_companies);
                     if(randc!=NULL)
-                        blacklist_company(randc->company.acronym,all_companies,blacklisted_companies);
+                    {
+                        if(search_company(blacklisted_companies,randc->company.acronym)==NULL)
+                            blacklist_company(randc->company.acronym,all_companies,blacklisted_companies);
+                    }
                     // blacklist
                     break;
                 }

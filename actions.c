@@ -20,17 +20,18 @@ int time2int(char * stime) //converts a clock time string to system time
 }
 
 
-void sort_all_lists(lists_present_planes * present_planes,Companies_list all_companies,Companies_list blacklisted_companies,int time)//Sort list according to the remaining fuel
+void sort_all_lists(lists_present_planes * present_planes,Companies_list all_companies,Companies_list blacklisted_companies,int time,int runways)//Sort list according to the remaining fuel
 {
     //order landing and take off list
     if(present_planes->landing!=NULL)
-    {
         sortwaitinglist(&(present_planes->landing));
-    }
+
     if(present_planes->boarding!=NULL)
         sortwaitinglist(&(present_planes->boarding));
+
     //boarding to take off unless blacklisted
-    move2queue(&(present_planes->boarding),present_planes->takeoff,time,&blacklisted_companies);
+    move2queue(&(present_planes->boarding),present_planes->takeoff,time,&blacklisted_companies,runways);
+
     //extract landing to emergency
     while(Emergency(present_planes->landing))
     {
@@ -212,7 +213,7 @@ int Takingoff(Takeoff_list * Takeoff,int time,Companies_list blacklisted_compani
     return 0;
 }
 
-void move2queue(Planes_list * waiting,Takeoff_list * immediate,int time,Companies_list * blacklisted_companies)// Moves plane from the takeoff wait list to the taking off queue.
+void move2queue(Planes_list * waiting,Takeoff_list * immediate,int time,Companies_list * blacklisted_companies,int runways)// Moves plane from the takeoff wait list to the taking off queue.
 {
     if(*waiting!=NULL)
     {
@@ -228,7 +229,7 @@ void move2queue(Planes_list * waiting,Takeoff_list * immediate,int time,Companie
                 count=count->next_waiting;
             }
         }
-        while(numscheduled<5 && (*waiting)!=NULL)
+        while(numscheduled<(5*runways) && (*waiting)!=NULL)
         {
             if(time2int((*waiting)->plane.takeoff_time)<time+5)
             {
@@ -255,7 +256,7 @@ void move2queue(Planes_list * waiting,Takeoff_list * immediate,int time,Companie
             }
             else
             {
-                numscheduled=5;
+                numscheduled=(5*runways);
             }
         }
     }

@@ -8,7 +8,8 @@
 void user_interaction(lists_present_planes * present_planes, Companies_list * all_companies,Companies_list * blacklisted_companies, int time)//Menu of interaction for the user
 {
     int select=0,fuel,consumption;
-    char input[4], name[7],event[19],n_time[5];
+    char input[4], name[7],event[20],n_time[5],curtime[5];
+    time2string(time,curtime);
     Cell_plane * plane_cell;
     while(select!=32)
     {
@@ -18,7 +19,7 @@ void user_interaction(lists_present_planes * present_planes, Companies_list * al
         printf("Time - %c%c:%c%c",stime[0],stime[1],stime[2],stime[3]);
         printf("\n\n       What would you like to do?\n\n  1. Add airplane to takeoff\n  2. Add airplane to landing\n  3. Remove an airplane at launch\n  4. Declare a landing airplane as emergency\n  5. Put a company on the blacklist\n  6. Display all companies and their aircrafts\n  7. Display status of a company's planes\n  8. Display airplanes awaiting takeoff\n  9. Display airplanes waiting to land\n  0. Display history\n\n Press Spacebar to quit menu and continue simulation...");
         //printf("\n takeoff:%s boarding:%s",present_planes->takeoff->first->plane.id,present_planes->boarding->plane.id);
-        select=getchar();
+        select=getch();
         system("cls");
         switch(select)
         {
@@ -33,7 +34,7 @@ void user_interaction(lists_present_planes * present_planes, Companies_list * al
             printf("At what time do you want to launch it (HHMM)? ");
             scanf("%s",n_time);
             sprintf(event,"%s-D-%s------",name,n_time);
-            events_execution(event,all_companies, blacklisted_companies,present_planes,n_time);
+            events_execution(event,all_companies, blacklisted_companies,present_planes,curtime);
             break;
 
         case(50): //Add an airplane to landing
@@ -45,7 +46,7 @@ void user_interaction(lists_present_planes * present_planes, Companies_list * al
             printf("Fuel of the plane? ");
             scanf("%d",&fuel);
             sprintf(event,"%s-A------%d%d-%d%d",name,fuel/10,fuel%10,consumption/10,consumption%10);
-            events_execution(event,all_companies, blacklisted_companies,present_planes,n_time);
+            events_execution(event,all_companies, blacklisted_companies,present_planes,curtime);
             break;
 
         case(51): //Remove an airplane at launch
@@ -157,8 +158,8 @@ void user_interaction(lists_present_planes * present_planes, Companies_list * al
         }
         if(select!=32)
         {
-            printf("\n\n   Press any key to go back to interaction menu...   ");
-            getchar();
+            printf("\n\n   Press any key to go back to interaction menu...");
+            getch();
         }
     }
 }
@@ -273,6 +274,95 @@ Cell_plane * pop_plane(Planes_list * Plane_cell,char * ID)
     }
     return NULL;
 }
+
+
+void random_gen(lists_present_planes * present_planes, Companies_list * all_companies,Companies_list * blacklisted_companies, int time)
+{
+    if(rand()%3)
+    {
+        char name[4],stime[5],event[20],curtime[5];
+        time2string(time,curtime);
+        int ID;
+        Companies_list randc;
+        switch(rand()%3)
+        {
+        case 0:
+            // add takeoff
+            randc=randcomp(*all_companies);
+            if(randc!=NULL)
+            {
+                ID=rand()%1000;
+                time2string(time+6+(rand()%(1440-time)),stime);
+                sprintf(event,"%s%d%d%d-D-%s------",randc->company.acronym,ID/100,(ID%100)/10,ID%10,stime);
+                events_execution(event,all_companies, blacklisted_companies,present_planes,curtime);
+            }
+            break;
+        case 1:
+            randc=randcomp(*all_companies);
+            if(randc!=NULL)
+            {
+                int fuel,consumption;
+                ID=rand()%1000;
+                consumption=(rand()%5)+1;
+                fuel=consumption*((rand()%15)+1);
+                sprintf(event,"%s%d%d%d-A------%d%d-%d%d",randc->company.acronym,ID/100,(ID%100)/10,ID%10,fuel/10,fuel%10,consumption/10,consumption%10);
+                events_execution(event,all_companies, blacklisted_companies,present_planes,curtime);
+            }
+            break;
+        /*case 2:
+            // remove launch or decide landing in an emergency or blacklist
+            if(rand()%4)
+            {
+                switch(rand()%3)
+                {
+                case 0:
+                    plane_cell=pop_plane(&(present_planes->boarding),name);
+                    // remove launch
+                    break;
+                case 1:
+                    plane_cell=pop_plane(&(present_planes->boarding),name);
+                    // emergency land
+                    break;
+                case 2:
+                    // blacklist
+                    break;
+                }
+            break;*/
+        }
+    }
+}
+
+Companies_list randcomp(Companies_list all_companies)
+{
+    if(all_companies==NULL)
+        return NULL;
+    else
+    {
+        int i,n=0;
+        Companies_list cur=all_companies;
+        while(cur!=NULL)
+        {
+            cur=cur->next_company;
+            n++;
+        }
+        cur=all_companies;
+        n=rand()%n;
+        for(i=0;i<n;i++)
+        {
+            cur=cur->next_company;
+        }
+        return cur;
+
+    }
+}
+
+
+
+
+
+
+
+
 
 
 

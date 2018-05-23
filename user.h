@@ -6,4 +6,5 @@ void planes_status(Company * companies,int unused,lists_present_planes * present
 void print_planes(Planes_list cur,int landing);
 void print_unused(Companies_list cur,lists_present_planes * present_planes);
 Cell_plane * pop_plane(Planes_list * Plane_cell,char * ID);
+Companies_list randcomp(Companies_list  all_companies);
 #endif // USER_H_INCLUDED

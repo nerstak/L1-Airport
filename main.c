@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 #include "actions.h"
 #include "data_access.h"
 #include "log_read.h"
@@ -10,6 +11,7 @@
 int main()
 {
     // initializing variables
+    srand(time(NULL));
     int time;
     char stime[5],event[25];
     //ALL INITIAL FILE READING
@@ -25,6 +27,7 @@ int main()
     {
         time2string(time,stime);
         events_reading(stime,&all_companies,&blacklisted_companies,present_planes);
+        random_gen(present_planes,&all_companies,&blacklisted_companies,time);
         sort_all_lists(present_planes,all_companies,blacklisted_companies,time);//After adding new events, we sort
         if(time%5==0) //Player input every 5 min
         {

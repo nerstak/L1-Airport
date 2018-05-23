@@ -200,7 +200,7 @@ void read_log(int lines_to_read) //Function to display the history
     {
         printf("%s",line);
         if(i!=0 && i%9==0)
-            getchar();
+            getch();
         ++i;
     }
     fclose(log_file);

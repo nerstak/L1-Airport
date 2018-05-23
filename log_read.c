@@ -114,10 +114,15 @@ void blacklist_company(char * acro,Companies_list * all_companies, Companies_lis
 {
     Companies_list ptr_comp;
     ptr_comp=search_company(all_companies,acro);
-    if(ptr_comp!=NULL)
+    if(ptr_comp==NULL)//Creation of the company if it doesn't exist
     {
-        new_cell_company(blacklisted,ptr_comp->company.name,ptr_comp->company.acronym);
+        char new_name_comp[15];
+        printf("Name of the company corresponding to \"%s\"?",acro);
+        scanf("%s",new_name_comp);
+        new_cell_company(all_companies,new_name_comp,acro);
+        ptr_comp=search_company(all_companies,acro);
     }
+    new_cell_company(blacklisted,ptr_comp->company.name,ptr_comp->company.acronym);
 }
 
 
@@ -136,23 +141,30 @@ Companies_list setup_companies()//Setup all companies and their acronym
     }
     while (fgets(line,100,companies_file)!=NULL)
     {
+        int check=1;
         strcpy(company,"");
         strcpy(acronym,"");
         int i=0;
-        while(i<14 && line[i]!='=')
+        while(i<14 && line[i]!='=' && line[i]!='\n')
         {
             temp[0]=line[i]; //Converting a caracter pickup into a string
             temp[1]='\0';
             strcat(company,temp);
             i++;
         }
-        for(++i;i<strlen(company)+4;i++)
+        if(line[i]=='=')
         {
-            temp[0]=line[i]; //Converting a caracter pickup into a string
-            temp[1]='\0';
-            strcat(acronym,temp);
+            for(++i;i<strlen(company)+4;i++)
+            {
+                temp[0]=line[i]; //Converting a caracter pickup into a string
+                temp[1]='\0';
+                if(temp[0]==' ')
+                    check=0;
+                strcat(acronym,temp);
+            }
+            if(check==1)
+                new_cell_company(list_company,company,acronym);
         }
-        new_cell_company(list_company,company,acronym);
     }
     fclose(companies_file);
     return *list_company;
@@ -188,7 +200,7 @@ void read_log(int lines_to_read) //Function to display the history
     {
         printf("%s",line);
         if(i!=0 && i%9==0)
-            getch();
+            getchar();
         ++i;
     }
     fclose(log_file);

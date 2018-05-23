@@ -67,7 +67,6 @@ void new_cell_plane(char *id,int comsumption, int fuel, char *takeoff_time, Comp
             cursor_plane=cursor_plane->next_plane_company;
         }
         cursor_plane->next_plane_company=newCellPlane;
-        newCellPlane->previous_plane_company=cursor_plane;                          //Theo added this line, remove it if I goofed up
     }
 
 

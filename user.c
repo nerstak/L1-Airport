@@ -18,7 +18,7 @@ void user_interaction(lists_present_planes * present_planes, Companies_list * al
         printf("Time - %c%c:%c%c",stime[0],stime[1],stime[2],stime[3]);
         printf("\n\n       What would you like to do?\n\n  1. Add airplane to takeoff\n  2. Add airplane to landing\n  3. Remove an airplane at launch\n  4. Declare a landing airplane as emergency\n  5. Put a company on the blacklist\n  6. Display all companies and their aircrafts\n  7. Display status of a company's planes\n  8. Display airplanes awaiting takeoff\n  9. Display airplanes waiting to land\n  0. Display history\n\n Press Spacebar to quit menu and continue simulation...");
         //printf("\n takeoff:%s boarding:%s",present_planes->takeoff->first->plane.id,present_planes->boarding->plane.id);
-        select=getch();
+        select=getchar();
         system("cls");
         switch(select)
         {
@@ -123,7 +123,7 @@ void user_interaction(lists_present_planes * present_planes, Companies_list * al
                 planes_status(search_company(all_companies,input),0,present_planes);
             break;
 
-        case(56):
+        case(56): //Display planes waiting to takeoff
             if(present_planes->boarding!=NULL || present_planes->takeoff->first!=NULL)
             {
                 printf("\n       Planes awaiting takeoff:\n");
@@ -134,7 +134,7 @@ void user_interaction(lists_present_planes * present_planes, Companies_list * al
                 printf("\n       No planes are awaiting takeoff\n");
             break;
 
-        case(57):
+        case(57): //Display planes waiting for landing
             if(present_planes->emergency!=NULL)
             {
                 printf("\n       Planes in emergency:\n");
@@ -158,7 +158,7 @@ void user_interaction(lists_present_planes * present_planes, Companies_list * al
         if(select!=32)
         {
             printf("\n\n   Press any key to go back to interaction menu...   ");
-            getch();
+            getchar();
         }
     }
 }

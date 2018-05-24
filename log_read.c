@@ -81,7 +81,7 @@ void events_execution(char *event,Companies_list * list_company, Companies_list 
             {
                 strcpy(ptr_plane->plane.takeoff_time,takeoff_time);
                 ptr_plane->plane.fuel=atoi(fuel);
-                ptr_plane->plane.comsumption=atoi(fuel);
+                ptr_plane->plane.comsumption=atoi(consumption);
 
             }
             switch(event[7])

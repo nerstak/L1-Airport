@@ -31,7 +31,7 @@ int main()
         printf("\n   How many runways would you like (1-9) : ");
         scanf("%d",&runways);
         if(runways<1 || runways>9)
-            printf("\n  Nice try smartass, for real now \n");
+            printf("\n  Nice try, for real now, \n");
     }while(runways<1 || runways>9);
     for(time=0;time<=1440;time++) //Big main loop
     {

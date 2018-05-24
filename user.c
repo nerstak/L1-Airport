@@ -13,17 +13,15 @@ void user_interaction(lists_present_planes * present_planes, Companies_list * al
     Cell_plane * plane_cell;
     while(select!=32)
     {
-        system("cls");
+        //system("cls");
+        printf("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");       //system("cls") is very slow on some systems so this is the ugly replacement
         char stime[5];
         time2string(time,stime);
         printf("Time - %c%c:%c%c",stime[0],stime[1],stime[2],stime[3]);
         printf("\n\n       What would you like to do?\n\n  1. Add airplane to takeoff\n  2. Add airplane to landing\n  3. Remove an airplane at launch\n  4. Declare a landing airplane as emergency\n  5. Put a company on the blacklist\n  6. Display all companies and their aircrafts\n  7. Display status of a company's planes\n  8. Display airplanes awaiting takeoff\n  9. Display airplanes waiting to land\n  0. Display history\n\n Press Spacebar to quit menu and continue simulation...");
-        //printf("\n takeoff:%s boarding:%s",present_planes->takeoff->first->plane.id,present_planes->boarding->plane.id);
-        int yeha=rand()%5;
-        if(yeha)
-            printf("Yeha %d",yeha);
         select=getch();
-        system("cls");
+        //system("cls");
+        printf("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
         switch(select)
         {
         case(48): //Print the history
@@ -314,7 +312,7 @@ void random_gen(lists_present_planes * present_planes, Companies_list * all_comp
             }
             break;
         case 2:
-            // remove launch or decide landing in an emergency or blacklist
+            // remove launch, declare landing as an emergency or blacklist a company
             if(rand()%5==0)
             {
                 switch(rand()%3)
